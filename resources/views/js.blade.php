@@ -4,7 +4,7 @@ let HEATMAP = {
     settings: {
         url: '{{ $url }}',
         clicks: Boolean('{{ $clicks }}'),
-        clicksThreshold: 2,
+        clicksThreshold: 10,
         movement: Boolean('{{ $movement }}'),
     },
 
@@ -15,7 +15,7 @@ let HEATMAP = {
 
     init: () => {
         if (HEATMAP.settings.clicks) {
-            HEATMAP.trackClicks();
+            HEATMAP.initClicks();
         }
 
         if (HEATMAP.settings.movement) {
@@ -23,20 +23,35 @@ let HEATMAP = {
         }
     },
 
-    trackClicks: () => {
-        addEventListener('click', (e) => {
+    initClicks: () => {
+        // When the user clicks
+        addEventListener('click', async (e) => {
             HEATMAP.data.clicks.push({
                 x: parseFloat((e.clientX / HEATMAP.windowWidth()).toFixed(6)),
                 y: parseFloat((e.clientY / HEATMAP.windowHeight()).toFixed(6)),
             })
-            
+
             if (HEATMAP.data.clicks.length >= HEATMAP.settings.clicksThreshold) {
-                HEATMAP.send({
-                    clicks: HEATMAP.data.clicks
-                });
+                await HEATMAP.trackClicks();
 
                 HEATMAP.data.clicks = [];
             }
+        });
+
+        // When a user refreshes, or navigates away
+        addEventListener('beforeunload', async (e) => {
+            await HEATMAP.trackClicks();
+        });
+    },
+
+    trackClicks: async () => {
+        // Don't send any data, if we don't have any
+        if (!HEATMAP.data.clicks.length) {
+            return;
+        }
+
+        await HEATMAP.send({
+            clicks: HEATMAP.data.clicks
         });
     },
 
@@ -44,9 +59,10 @@ let HEATMAP = {
 
     },
 
-    send: (data) => {
-        fetch(HEATMAP.settings.url, {
+    send: async (data) => {
+        await fetch(HEATMAP.settings.url, {
             method: 'POST',
+            keepalive: true,
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',

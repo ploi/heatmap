@@ -15,5 +15,8 @@
         "tailwindcss": "^3.1.8",
         "tippy.js": "^6.3.7",
         "vite": "^3.0.0"
+    },
+    "dependencies": {
+        "@mars3d/heatmap.js": "^2.0.6"
     }
 }

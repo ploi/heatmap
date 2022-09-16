@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
+
+            $table->string('domain')->nullable();
+
             $table->timestamps();
         });
     }

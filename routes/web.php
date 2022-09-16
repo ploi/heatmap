@@ -18,6 +18,20 @@ Route::get('/', function () {
 });
 
 Route::post('track', function (\Illuminate\Http\Request $request) {
+    if (!$request->input('clicks')) {
+        return [];
+    }
+
+    $site = \App\Models\Site::first();
+
+    $client = \App\Models\Client::firstOrCreate([
+        'identifier' => $request->anonymizedIdentifier()
+    ]);
+
+    $site->clicks()->create([
+        'data' => $request->input('clicks'),
+        'client_id' => $client->id
+    ]);
     return [];
 });
 

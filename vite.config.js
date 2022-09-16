@@ -4,7 +4,7 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/filament.css'],
+            input: ['resources/css/filament.css', 'resources/js/heatmap.js'],
             refresh: true,
         }),
     ],
