@@ -11,10 +11,14 @@ class Heatmap extends Page
 
     protected static string $view = 'filament.pages.heatmap';
 
+    protected static ?string $slug = 'heatmap/{site}';
+
+    protected static bool $shouldRegisterNavigation = false;
+
     public $clicks;
 
-    public function mount()
+    public function mount($site)
     {
-        $this->clicks = Site::first()->clicks()->pluck('data')->flatten(1);
+        $this->clicks = Site::findOrFail($site)->clicks()->pluck('data')->flatten(1);
     }
 }

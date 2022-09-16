@@ -60,6 +60,9 @@ let HEATMAP = {
     },
 
     send: async (data) => {
+        data.width = HEATMAP.windowWidth();
+        data.height = HEATMAP.windowHeight();
+
         await fetch(HEATMAP.settings.url, {
             method: 'POST',
             keepalive: true,

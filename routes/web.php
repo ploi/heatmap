@@ -26,6 +26,9 @@ Route::post('track', function (\Illuminate\Http\Request $request) {
 
     $client = \App\Models\Client::firstOrCreate([
         'identifier' => $request->anonymizedIdentifier()
+    ], [
+        'width' => $request->input('width'),
+        'height' => $request->input('height'),
     ]);
 
     $site->clicks()->create([
@@ -43,4 +46,4 @@ Route::get('heatmap.js', function () {
             'movement' => false
         ])
         ->header('Content-Type', 'application/javascript');
-});
+})->name('heatmap.js');

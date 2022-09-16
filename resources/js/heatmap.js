@@ -1,9 +1,9 @@
 import h337 from '@mars3d/heatmap.js';
 
-var heatmapWidth = document.querySelector('.heatmap').clientWidth;
-var heatmapHeight = document.querySelector('.heatmap').clientHeight;
+if(document.querySelector('.heatmap')){
+    window.heatmap = h337.create({
+        container: document.querySelector('.heatmap'),
+        radius: 30
+    });
 
-window.heatmap = h337.create({
-    container: document.querySelector('.heatmap'),
-    radius: 30
-});
+}
