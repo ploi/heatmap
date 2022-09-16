@@ -16,3 +16,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/admin');
 });
+
+Route::post('track', function (\Illuminate\Http\Request $request) {
+    ray($request->all());
+});
+
+Route::get('heatmap.js', function () {
+    return response()
+        ->view('js', [
+            'url' => 'http://heatmap.test/track',
+            'clicks' => true,
+            'movement' => false
+        ])
+        ->header('Content-Type', 'application/javascript');
+});
