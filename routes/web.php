@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::post('track', function (\Illuminate\Http\Request $request) {
-    ray($request->all());
+    return [];
 });
 
 Route::get('heatmap.js', function () {
