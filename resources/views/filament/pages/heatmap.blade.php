@@ -2,8 +2,6 @@
     <style>
         #wrapper {
             position: absolute;
-            width: 50px;
-            height: 50px;
         }
 
         .heatmap {
@@ -13,7 +11,7 @@
             text-shadow: -1px -1px 1px #000, 1px 1px 1px #000;
             position: relative;
             z-index: 100;
-            height: 1628px;
+            height: 1000px;
             width: 1200px;
         }
 
@@ -34,11 +32,14 @@
         }
 
     </style>
-    <div id="wrapper">
+    <x-filament::button>Mobile</x-filament::button>
+    <x-filament::button>Small monitors</x-filament::button>
+    <x-filament::button>Large monitors</x-filament::button>
+    <div id="wrapper" class="bg-white rounded-lg shadow-lg">
         <div class="heatmap overlay" id="heatmapContainer">
         </div>
         <div class="bgiframe">
-            <iframe src="/test/Document.html" id="iframe" title="iFrame" height="500"
+            <iframe src="/test/Document.html" id="iframe" title="iFrame" height="1000"
                     width="1200" frameborder="0"></iframe>
 
         </div>
@@ -57,35 +58,9 @@
         });
 
         function setHeatmapData() {
-            // create heatmap with configuration
-            // now generate some random data
-            var max = 10;
-
-            // @TODO: Needs to be width/height of document inside iframe
-            var width = 1200;
-            var height = 2049;
-
-            let clicks = JSON.parse('@json($clicks)');
-
-            // Do it again so we can see, it's JS so just doing clicks means seeing the changed data... just temp debug
-            console.log(JSON.parse('@json($clicks)'));
-
-            let mapped = clicks.map(function (element) {
-                var originalScaleWidth = (width - element.w) / 2;
-
-                element.x = Math.floor(element.x + originalScaleWidth);
-                element.y = Math.floor(element.y);
-
-                return element;
-            });
-
-            console.log(mapped);
-
-            // if you have a set of datapoints always use setData instead of addData
-            // for data initialization
             window.heatmap.setData({
-                max: max,
-                data: mapped
+                max: 10,
+                data: JSON.parse('@json($clicks)')
             });
         }
 
