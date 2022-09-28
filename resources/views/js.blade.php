@@ -47,12 +47,15 @@ let HEATMAP = {
         // When the user clicks
         addEventListener('click', async (e) => {
             // @TODO: Don't send w/h with each event, do it once
-            HEATMAP.data.clicks.push({
+            let data = {
                 x: e.pageX,
                 y: e.pageY,
                 w: getWidth(),
-                h: getHeight(),
-            })
+            };
+
+            HEATMAP.data.clicks.push(data);
+
+            console.log(data);
 
             if (HEATMAP.data.clicks.length >= HEATMAP.settings.clicksThreshold) {
                 await HEATMAP.trackClicks();
