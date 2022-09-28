@@ -60,25 +60,33 @@
             // create heatmap with configuration
             // now generate some random data
             var max = 10;
-            var width = 1200;
-            var height = 1628;
 
-            let awd = JSON.parse('@json($clicks)').map(function (element) {
-                // element.x = Math.floor(element.x * width)
-                // console.log(element.x);
-                // console.log(width - 1575);
-                element.x = Math.floor(element.x);
-                // element.y = Math.floor(element.y * 1628);
+            // @TODO: Needs to be width/height of document inside iframe
+            var width = 1200;
+            var height = 2049;
+
+            let clicks = JSON.parse('@json($clicks)');
+
+            // Do it again so we can see, it's JS so just doing clicks means seeing the changed data... just temp debug
+            console.log(JSON.parse('@json($clicks)'));
+
+            let mapped = clicks.map(function (element) {
+                var originalScaleWidth = (width - element.w) / 2;
+                var originalScaleHeight = (height - element.h) / 2;
+
+                element.x = Math.floor(element.x + originalScaleWidth);
+                element.y = Math.floor(element.y + originalScaleHeight);
+
                 return element;
             });
 
-            console.log(awd);
+            console.log(mapped);
 
             // if you have a set of datapoints always use setData instead of addData
             // for data initialization
             window.heatmap.setData({
                 max: max,
-                data: awd
+                data: mapped
             });
         }
 
@@ -94,5 +102,3 @@
         });
     </script>
 </x-filament::page>
-
-

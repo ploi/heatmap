@@ -1,3 +1,23 @@
+function getWidth() {
+    return Math.max(
+        document.body.scrollWidth,
+        document.documentElement.scrollWidth,
+        document.body.offsetWidth,
+        document.documentElement.offsetWidth,
+        document.documentElement.clientWidth
+    );
+}
+
+function getHeight() {
+    return Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.documentElement.clientHeight
+    );
+}
+
 let HEATMAP = {
     debug: false,
 
@@ -26,9 +46,12 @@ let HEATMAP = {
     initClicks: () => {
         // When the user clicks
         addEventListener('click', async (e) => {
+            // @TODO: Don't send w/h with each event, do it once
             HEATMAP.data.clicks.push({
-                x: e.clientX,
-                y: e.clientY
+                x: e.pageX,
+                y: e.pageY,
+                w: getWidth(),
+                h: getHeight(),
             })
 
             if (HEATMAP.data.clicks.length >= HEATMAP.settings.clicksThreshold) {
@@ -95,4 +118,3 @@ let HEATMAP = {
 document.addEventListener('DOMContentLoaded', (e) => {
     HEATMAP.init();
 });
-
