@@ -39,7 +39,7 @@
         <div class="heatmap overlay" id="heatmapContainer">
         </div>
         <div class="bgiframe">
-            <iframe src="/test/Document.html" id="iframe" title="iFrame" height="1000"
+            <iframe src="{{ $url }}" id="iframe" title="iFrame" height="1000"
                     width="1200" frameborder="0"></iframe>
 
         </div>

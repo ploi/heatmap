@@ -35,6 +35,7 @@ Route::post('track', function (\Illuminate\Http\Request $request) {
         'data' => $request->input('clicks'),
         'width' => $request->input('width'),
         'height' => $request->input('height'),
+        'path' => $request->input('path'),
         'client_id' => $client->id
     ]);
     return [];

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('data')->nullable();
             $table->unsignedInteger('width')->default(0)->index();
             $table->unsignedInteger('height')->default(0);
+            $table->text('path')->nullable();
             $table->foreignId('site_id')->constrained('sites');
             $table->foreignId('client_id')->constrained('clients');
 

@@ -18,6 +18,8 @@ class Heatmap extends Page
 
     public $clicks;
 
+    public $url = '/test/Document.html';
+
     public $size = 'lgAndXl';
 
     public function mount($site)
@@ -25,6 +27,7 @@ class Heatmap extends Page
         $this->clicks = Site::findOrFail($site)
             ->clicks()
             ->{$this->size}()
+            ->where('path', $this->url)
             ->get()
             ->map(function (Click $click) {
                 return collect($click->data)->map(function ($dataPoint) use ($click) {

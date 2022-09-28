@@ -74,7 +74,8 @@ let HEATMAP = {
 
         await HEATMAP.send({
             clicks: HEATMAP.data.clicks,
-            width: getWidth()
+            width: getWidth(),
+            path: window.location.pathname
         });
     },
 
