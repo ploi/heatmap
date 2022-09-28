@@ -22,9 +22,32 @@ class Heatmap extends Page
 
     public $size = 'lgAndXl';
 
+    public $site;
+
+    protected $listeners = ['urlChanged' => 'changeUrl'];
+
+    public function changeUrl($url)
+    {
+        $this->url = $url;
+        $this->getClicks();
+    }
+
     public function mount($site)
     {
-        $this->clicks = Site::findOrFail($site)
+        $this->getSite($site);
+        $this->getClicks();
+    }
+
+    public function getSite($site)
+    {
+        $this->site = Site::findOrFail($site);
+    }
+
+    public function getClicks()
+    {
+        ray($this->url);
+        ray()->showQueries();
+        $this->clicks = $this->site
             ->clicks()
             ->{$this->size}()
             ->where('path', $this->url)
@@ -41,5 +64,6 @@ class Heatmap extends Page
             })
             ->flatten(1);
 
+        ray($this->clicks);
     }
 }

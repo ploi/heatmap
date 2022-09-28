@@ -34,8 +34,8 @@
     <x-filament::button>SM >< MD</x-filament::button>
     <x-filament::button>MD >< LG</x-filament::button>
     <x-filament::button disabled>LG >< XL</x-filament::button>
-    <x-filament::button>XL >< XXL</x-filament::button>
-
+    <x-filament::button>XL ></x-filament::button>
+<button onclick="setHeatmapData([{x: 15, y:10}, {x: 15, y:10}, {x: 15, y:10}])">Set</button>
     <div id="wrapper" class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="heatmap overlay" id="heatmapContainer">
         </div>
@@ -48,32 +48,57 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            setHeatmapData();
+            setHeatmapData(@this.clicks);
+
+            iframeURLChange(document.getElementById("iframe"), function (newURL) {
+                window.Livewire.emit('urlChanged', newURL)
+                setHeatmapData(@this.clicks)
+            });
         });
 
         let resizeId;
 
-        window.addEventListener('resize', (e) => {
-            clearTimeout(resizeId);
-            resizeId = setTimeout(setHeatmapData, 350);
-        });
+        // window.addEventListener('resize', (e) => {
+        //     clearTimeout(resizeId);
+        //     resizeId = setTimeout(setHeatmapData, 350);
+        // });
 
-        function setHeatmapData() {
+        function setHeatmapData(clicks) {
             window.heatmap.setData({
                 max: 10,
-                data: JSON.parse('@json($clicks)')
+                data: clicks
             });
         }
 
-        let iframe = document
-            .querySelector('#iframe')
+        let iframe = document.querySelector('#iframe')
         let heatmap = document.getElementById('heatmapContainer')
         iframe.addEventListener('load', e => {
             e.target.contentWindow.addEventListener('scroll', e => {
                 let scroll = iframe.contentWindow.document.documentElement.scrollTop;
                 heatmap.style.transform = `translateY(${-scroll}px)`;
-                // console.log(scroll)
             });
         });
+
+        function iframeURLChange(iframe, callback) {
+            var unloadHandler = function () {
+                // Timeout needed because the URL changes immediately after
+                // the `unload` event is dispatched.
+                setTimeout(function () {
+                    callback(iframe.contentWindow.location.pathname);
+                }, 0);
+            };
+
+            function attachUnload() {
+                // Remove the unloadHandler in case it was already attached.
+                // Otherwise, the change will be dispatched twice.
+                iframe.contentWindow.removeEventListener("unload", unloadHandler);
+                iframe.contentWindow.addEventListener("unload", unloadHandler);
+            }
+
+            iframe.addEventListener("load", attachUnload);
+            attachUnload();
+        }
+
+
     </script>
 </x-filament::page>

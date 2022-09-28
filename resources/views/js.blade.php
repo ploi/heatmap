@@ -23,6 +23,7 @@ let HEATMAP = {
 
     settings: {
         url: '{{ $url }}',
+        baseUrl: '{{ $baseUrl }}',
         clicks: Boolean('{{ $clicks }}'),
         clicksThreshold: 10,
         movement: Boolean('{{ $movement }}'),
@@ -34,6 +35,10 @@ let HEATMAP = {
     },
 
     init: () => {
+        if(window.location.origin === HEATMAP.settings.baseUrl){
+            // return;
+        }
+
         if (HEATMAP.settings.clicks) {
             HEATMAP.initClicks();
         }

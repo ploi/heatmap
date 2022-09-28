@@ -44,6 +44,7 @@ Route::post('track', function (\Illuminate\Http\Request $request) {
 Route::get('heatmap.js', function () {
     return response()
         ->view('js', [
+            'baseUrl' => config('app.url'),
             'url' => url()->to('/track'),
             'clicks' => true,
             'movement' => false
