@@ -72,10 +72,9 @@
 
             let mapped = clicks.map(function (element) {
                 var originalScaleWidth = (width - element.w) / 2;
-                var originalScaleHeight = (height - element.h) / 2;
 
                 element.x = Math.floor(element.x + originalScaleWidth);
-                element.y = Math.floor(element.y + originalScaleHeight);
+                element.y = Math.floor(element.y);
 
                 return element;
             });
