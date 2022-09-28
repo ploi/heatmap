@@ -31,9 +31,10 @@
         }
     </style>
 
-    <x-filament::button>Mobile</x-filament::button>
-    <x-filament::button>Small monitors</x-filament::button>
-    <x-filament::button>Large monitors</x-filament::button>
+    <x-filament::button>SM >< MD</x-filament::button>
+    <x-filament::button>MD >< LG</x-filament::button>
+    <x-filament::button disabled>LG >< XL</x-filament::button>
+    <x-filament::button>XL >< XXL</x-filament::button>
 
     <div id="wrapper" class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="heatmap overlay" id="heatmapContainer">
