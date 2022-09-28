@@ -11,12 +11,11 @@
             text-shadow: -1px -1px 1px #000, 1px 1px 1px #000;
             position: relative;
             z-index: 100;
-            height: 1000px;
+            height: 100vw;
             width: 1200px;
         }
 
         .bgiframe {
-            color: #999999;
             position: absolute;
             top: 0;
             left: 0;
@@ -30,12 +29,13 @@
             pointer-events: none;
             background: none !important;
         }
-
     </style>
+
     <x-filament::button>Mobile</x-filament::button>
     <x-filament::button>Small monitors</x-filament::button>
     <x-filament::button>Large monitors</x-filament::button>
-    <div id="wrapper" class="bg-white rounded-lg shadow-lg">
+
+    <div id="wrapper" class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="heatmap overlay" id="heatmapContainer">
         </div>
         <div class="bgiframe">
