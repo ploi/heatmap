@@ -27,8 +27,8 @@ let HEATMAP = {
         // When the user clicks
         addEventListener('click', async (e) => {
             HEATMAP.data.clicks.push({
-                x: parseFloat((e.clientX / HEATMAP.windowWidth()).toFixed(6)),
-                y: parseFloat((e.clientY / HEATMAP.windowHeight()).toFixed(6)),
+                x: e.clientX,
+                y: e.clientY
             })
 
             if (HEATMAP.data.clicks.length >= HEATMAP.settings.clicksThreshold) {
