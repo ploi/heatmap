@@ -24,18 +24,45 @@ class Heatmap extends Page
 
     public $site;
 
+    public $frameWidth = Click::XL_BREAKPOINT - 1;
+
+    public $sizeCounts = [];
+
     protected $listeners = ['urlChanged' => 'changeUrl'];
+
+    public function mount($site)
+    {
+        $this->sizeCounts = [
+            'smAndLower' => Click::query()->smAndLower()->count(),
+            'smAndMd' => Click::query()->smAndMd()->count(),
+            'mdAndLg' => Click::query()->mdAndLg()->count(),
+            'lgAndXl' => Click::query()->lgAndXl()->count(),
+            'xlAndXxl' => Click::query()->xlAndXxl()->count(),
+            'xxlAndHigher' => Click::query()->xxlAndHigher()->count(),
+        ];
+
+        $this->getSite($site);
+        $this->getClicks();
+
+        $this->emit('heatmapNeedsRendering');
+    }
 
     public function changeUrl($url)
     {
         $this->url = $url;
         $this->getClicks();
+
+        $this->emit('heatmapNeedsRendering');
     }
 
-    public function mount($site)
+    public function changeSize($size)
     {
-        $this->getSite($site);
+        $this->size = $size;
+
+        $this->setFrameSize();
         $this->getClicks();
+
+        $this->emit('heatmapNeedsRendering');
     }
 
     public function getSite($site)
@@ -45,25 +72,34 @@ class Heatmap extends Page
 
     public function getClicks()
     {
-        ray($this->url);
-        ray()->showQueries();
         $this->clicks = $this->site
             ->clicks()
             ->{$this->size}()
             ->where('path', $this->url)
             ->get()
             ->map(function (Click $click) {
-                return collect($click->data)->map(function ($dataPoint) use ($click) {
-                    $originalScaleWidth = (1200 - $click->width) / 2;
-
-                    return [
-                        'x' => floor($dataPoint['x'] + $originalScaleWidth),
-                        'y' => floor($dataPoint['y']),
-                    ];
-                });
+                return collect($click->data)
+                    ->map(function ($dataPoint) use ($click) {
+                        $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
+                        return [
+                            'x' => floor($dataPoint['x'] + $originalScaleWidth),
+                            'y' => floor($dataPoint['y']),
+                        ];
+                    });
             })
             ->flatten(1);
+    }
 
-        ray($this->clicks);
+    public function setFrameSize()
+    {
+        $this->frameWidth = match($this->size){
+            'smAndLower' => Click::SM_BREAKPOINT - 1,
+            'smAndMd' => Click::MD_BREAKPOINT - 1,
+            'mdAndLg' => Click::LG_BREAKPOINT - 1,
+            'lgAndXl' => Click::XL_BREAKPOINT - 1 ,
+            'xlAndXxl' => Click::XXL_BREAKPOINT - 1,
+            'xxlAndHigher' => Click::XXL_BREAKPOINT - 1,
+            default => Click::XL_BREAKPOINT - 1,
+        };
     }
 }

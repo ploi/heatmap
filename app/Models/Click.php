@@ -22,6 +22,12 @@ class Click extends Model
         'data' => 'json'
     ];
 
+    public function scopeSmAndLower(Builder $query): Builder
+    {
+        return $query
+            ->where('width', '<', self::SM_BREAKPOINT);
+    }
+
     public function scopeSmAndMd(Builder $query): Builder
     {
         return $query
