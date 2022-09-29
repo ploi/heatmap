@@ -16,7 +16,9 @@ return new class extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
 
+            $table->string('hash')->nullable();
             $table->string('domain')->nullable();
+            $table->string('public')->nullable();
 
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('width')->nullable()->default(0);
             $table->integer('height')->nullable()->default(0);
 
+            $table->timestamp('last_seen_at')->nullable();
             $table->timestamps();
         });
     }

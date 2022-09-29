@@ -35,24 +35,25 @@
     <x-filament::button>MD >< LG</x-filament::button>
     <x-filament::button disabled>LG >< XL</x-filament::button>
     <x-filament::button>XL ></x-filament::button>
-<button onclick="setHeatmapData([{x: 15, y:10}, {x: 15, y:10}, {x: 15, y:10}])">Set</button>
+
     <div id="wrapper" class="bg-white rounded-lg shadow-xl overflow-hidden">
         <div class="heatmap overlay" id="heatmapContainer">
         </div>
         <div class="bgiframe">
-            <iframe src="{{ $url }}" id="iframe" title="iFrame" height="1000"
-                    width="1200" frameborder="0"></iframe>
-
+            <iframe src="{{ $url }}" id="iframe" title="iFrame" height="1000" width="1200" frameborder="0"></iframe>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            setHeatmapData(@this.clicks);
+            setHeatmapData();
 
             iframeURLChange(document.getElementById("iframe"), function (newURL) {
                 window.Livewire.emit('urlChanged', newURL)
-                setHeatmapData(@this.clicks)
+
+                setTimeout(() => {
+                    setHeatmapData()
+                }, 500)
             });
         });
 
@@ -63,10 +64,12 @@
         //     resizeId = setTimeout(setHeatmapData, 350);
         // });
 
-        function setHeatmapData(clicks) {
+        function setHeatmapData() {
+            window.createHeatmap();
+
             window.heatmap.setData({
                 max: 10,
-                data: clicks
+                data: @this.clicks
             });
         }
 

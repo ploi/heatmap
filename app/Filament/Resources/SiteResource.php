@@ -13,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class SiteResource extends Resource
 {
@@ -32,27 +33,32 @@ class SiteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('domain'),
+                Tables\Columns\TextColumn::make('domain')->searchable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Date')->sortable()->dateTime(),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('heatmap')
+                    ->icon('heroicon-o-desktop-computer')
+                    ->url(fn($record) => Heatmap::getUrl(['site' => $record->id])),
+
                 Tables\Actions\Action::make('tracker_code')
                     ->action(function () {
-
+                        return null;
                     })
+                    ->icon('heroicon-o-code')
                     ->requiresConfirmation()
                     ->modalHeading('Tracker code')
-                    ->modalSubheading('Get your tracker code here, put this snippet between your <head></head.> tags.')
+                    ->modalSubheading(new HtmlString('This is your tracker code, put this snippet between your <head></head> tags.'))
                     ->modalActions([])
                     ->form([
                         Forms\Components\Textarea::make('tracker_code')->afterStateHydrated(function ($component, $state, $record, \Closure $set) {
                             $set('tracker_code', '<script src="' . route('heatmap.js') . '"></script>');
                         })
                     ]),
-                Tables\Actions\Action::make('heatmap')->url(fn($record) => Heatmap::getUrl(['site' => $record->id])),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
