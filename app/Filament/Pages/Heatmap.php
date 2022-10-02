@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Click;
 use App\Models\Site;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 
 class Heatmap extends Page
@@ -12,20 +13,15 @@ class Heatmap extends Page
 
     protected static string $view = 'filament.pages.heatmap';
 
-    protected static ?string $slug = 'heatmap/{site}';
+    protected static ?string $slug = 'sites/{site}/heatmap';
 
     protected static bool $shouldRegisterNavigation = false;
 
     public $clicks;
-
     public $url = '/test/Document.html';
-
     public $size = 'lgAndXl';
-
     public $site;
-
     public $frameWidth = Click::XL_BREAKPOINT - 1;
-
     public $sizeCounts = [];
 
     protected $listeners = ['urlChanged' => 'changeUrl'];
@@ -97,7 +93,7 @@ class Heatmap extends Page
             'smAndLower' => Click::SM_BREAKPOINT - 1,
             'smAndMd' => Click::MD_BREAKPOINT - 1,
             'mdAndLg' => Click::LG_BREAKPOINT - 1,
-            'lgAndXl' => Click::XL_BREAKPOINT - 1 ,
+            'lgAndXl' => Click::XL_BREAKPOINT - 1,
             'xlAndXxl' => Click::XXL_BREAKPOINT - 1,
             'xxlAndHigher' => Click::XXL_BREAKPOINT - 1,
             default => Click::XL_BREAKPOINT - 1,
