@@ -19,7 +19,7 @@ class Site extends Model
     public static function booted()
     {
         static::creating(function (self $site) {
-            if (! $site->hash) {
+            if (!$site->hash) {
                 $site->hash = Str::random(25);
             }
         });

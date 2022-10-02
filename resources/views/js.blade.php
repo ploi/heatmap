@@ -1,23 +1,3 @@
-function getWidth() {
-    return Math.max(
-        document.body.scrollWidth,
-        document.documentElement.scrollWidth,
-        document.body.offsetWidth,
-        document.documentElement.offsetWidth,
-        document.documentElement.clientWidth
-    );
-}
-
-function getHeight() {
-    return Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.offsetHeight,
-        document.documentElement.clientHeight
-    );
-}
-
 let HEATMAP = {
     debug: false,
 
@@ -79,7 +59,8 @@ let HEATMAP = {
 
         await HEATMAP.send({
             clicks: HEATMAP.data.clicks,
-            width: getWidth(),
+            width: HEATMAP.getWidth(),
+            height: HEATMAP.getHeight(),
             path: window.location.pathname
         });
     },
@@ -89,9 +70,6 @@ let HEATMAP = {
     },
 
     send: async (data) => {
-        data.width = HEATMAP.windowWidth();
-        data.height = HEATMAP.windowHeight();
-
         await fetch(HEATMAP.settings.url, {
             method: 'POST',
             keepalive: true,
@@ -104,12 +82,24 @@ let HEATMAP = {
             .then((response) => response.json())
     },
 
-    getScrollLeft: function () {
-        return (document.body.scrollLeft || window.pageXOffset || document.documentElement.scrollLeft) | 0;
+    getWidth: function () {
+        return Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.documentElement.clientWidth
+        );
     },
 
-    getScrollTop: function () {
-        return (document.body.scrollTop || window.pageYOffset || document.documentElement.scrollTop) | 0;
+    getHeight: function () {
+        return Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight,
+            document.documentElement.clientHeight
+        );
     },
 
     windowWidth: function () {

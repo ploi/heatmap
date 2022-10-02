@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('hash')->nullable();
-            $table->string('domain')->nullable();
+            $table->string('domain')->nullable()->index();
             $table->string('public')->nullable();
 
             $table->timestamps();
