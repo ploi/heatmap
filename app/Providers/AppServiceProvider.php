@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Request::macro('anonymizedIdentifier', function () {
-            return hash('sha512', base64_encode($this->ip() . '.' .$this->userAgent()));
+            return hash('sha512', base64_encode($this->ip().'.'.$this->userAgent()));
         });
     }
 }

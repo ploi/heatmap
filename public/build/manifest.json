@@ -1,0 +1,12 @@
+{
+  "resources/js/heatmap.js": {
+    "file": "assets/heatmap.1338a8be.js",
+    "src": "resources/js/heatmap.js",
+    "isEntry": true
+  },
+  "resources/css/filament.css": {
+    "file": "assets/filament.3b0c5a85.css",
+    "src": "resources/css/filament.css",
+    "isEntry": true
+  }
+}

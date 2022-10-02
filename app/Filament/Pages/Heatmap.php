@@ -81,6 +81,7 @@ class Heatmap extends Page
                 return collect($click->data)
                     ->map(function ($dataPoint) use ($click) {
                         $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
+
                         return [
                             'x' => floor($dataPoint['x'] + $originalScaleWidth),
                             'y' => floor($dataPoint['y']),
@@ -92,7 +93,7 @@ class Heatmap extends Page
 
     public function setFrameSize()
     {
-        $this->frameWidth = match($this->size){
+        $this->frameWidth = match ($this->size) {
             'smAndLower' => Click::SM_BREAKPOINT - 1,
             'smAndMd' => Click::MD_BREAKPOINT - 1,
             'mdAndLg' => Click::LG_BREAKPOINT - 1,

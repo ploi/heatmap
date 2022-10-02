@@ -11,15 +11,19 @@ class Click extends Model
     use HasFactory;
 
     const SM_BREAKPOINT = 640;
+
     const MD_BREAKPOINT = 768;
+
     const LG_BREAKPOINT = 1024;
+
     const XL_BREAKPOINT = 1280;
+
     const XXL_BREAKPOINT = 1536;
 
     protected $guarded = [];
 
     protected $casts = [
-        'data' => 'json'
+        'data' => 'json',
     ];
 
     public function scopeSmAndLower(Builder $query): Builder

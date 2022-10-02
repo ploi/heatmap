@@ -4,15 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Pages\Heatmap;
 use App\Filament\Resources\SiteResource\Pages;
-use App\Filament\Resources\SiteResource\RelationManagers;
 use App\Models\Site;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 
 class SiteResource extends Resource
@@ -42,7 +39,7 @@ class SiteResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('heatmap')
                     ->icon('heroicon-o-desktop-computer')
-                    ->url(fn($record) => Heatmap::getUrl(['site' => $record->id])),
+                    ->url(fn ($record) => Heatmap::getUrl(['site' => $record->id])),
 
                 Tables\Actions\Action::make('tracker_code')
                     ->action(function () {
@@ -55,8 +52,8 @@ class SiteResource extends Resource
                     ->modalActions([])
                     ->form([
                         Forms\Components\Textarea::make('tracker_code')->afterStateHydrated(function ($component, $state, $record, \Closure $set) {
-                            $set('tracker_code', '<script src="' . route('heatmap.js') . '"></script>');
-                        })
+                            $set('tracker_code', '<script src="'.route('heatmap.js').'"></script>');
+                        }),
                     ]),
 
                 Tables\Actions\EditAction::make(),

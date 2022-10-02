@@ -17,15 +17,15 @@ Route::get('/', function () {
     return redirect('/admin');
 });
 
-Route::post('track', function (\Illuminate\Http\Request $request) {
-    if (!$request->input('clicks')) {
+Route::post('track', function (Illuminate\Http\Request $request) {
+    if (! $request->input('clicks')) {
         return [];
     }
 
     $site = \App\Models\Site::first();
 
     $client = \App\Models\Client::firstOrCreate([
-        'identifier' => $request->anonymizedIdentifier()
+        'identifier' => $request->anonymizedIdentifier(),
     ], [
         'width' => $request->input('width'),
         'height' => $request->input('height'),
@@ -36,8 +36,9 @@ Route::post('track', function (\Illuminate\Http\Request $request) {
         'width' => $request->input('width'),
         'height' => $request->input('height'),
         'path' => $request->input('path'),
-        'client_id' => $client->id
+        'client_id' => $client->id,
     ]);
+
     return [];
 });
 
@@ -47,7 +48,7 @@ Route::get('heatmap.js', function () {
             'baseUrl' => config('app.url'),
             'url' => url()->to('/track'),
             'clicks' => true,
-            'movement' => false
+            'movement' => false,
         ])
         ->header('Content-Type', 'application/javascript');
 })->name('heatmap.js');

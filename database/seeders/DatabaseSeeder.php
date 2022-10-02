@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-         \App\Models\User::factory()->create([
-             'name' => 'Dennis',
-             'email' => 'dennis@heatmap.com',
-         ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Dennis',
+            'email' => 'dennis@heatmap.com',
+        ]);
 
-         Site::create([
-             'domain' => 'heatmap.test'
-         ]);
+        Site::create([
+            'domain' => 'heatmap.test',
+        ]);
     }
 }

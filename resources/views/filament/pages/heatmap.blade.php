@@ -20,11 +20,11 @@
     <x-filament::button wire:click="changeSize('xlAndXxl')">XL >< XXL ({{ $sizeCounts['xlAndXxl'] }})</x-filament::button>
     <x-filament::button wire:click="changeSize('xxlAndHigher')">XXL > ({{ $sizeCounts['xxlAndHigher'] }})</x-filament::button>
 
-    <div class="bg-white rounded-lg shadow-xl overflow-hidden absolute">
-        <div class="heatmap overlay relative z-[100]" id="heatmapContainer">
+    <div class="bg-white rounded-lg shadow-xl overflow-hidden absolute max-w-full" style="transform: scale(0.5); top: 0;">
+        <div class="heatmap overlay relative z-[100] max-w-full" id="heatmapContainer">
         </div>
         <div class="h-auto w-auto absolute top-0 left-0 z-0">
-            <iframe src="{{ $url }}" id="iframe" title="iFrame" height="2500" width="{{ $frameWidth }}" frameborder="0"></iframe>
+            <iframe src="{{ $url }}" class="max-w-full" id="iframe" title="iFrame" height="2500" width="{{ $frameWidth }}" frameborder="0"></iframe>
         </div>
     </div>
 
