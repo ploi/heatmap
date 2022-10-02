@@ -5,6 +5,9 @@ module.exports = {
         './resources/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
     ],
+    safelist: [
+        'drop-shadow-lg'
+    ],
     darkMode: 'class',
     theme: {
         extend: {

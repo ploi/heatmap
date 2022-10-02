@@ -22,7 +22,9 @@ class SiteResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Card::make([
+                    Forms\Components\TextInput::make('domain')->required()->string()
+                ])
             ]);
     }
 
@@ -30,8 +32,15 @@ class SiteResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('favIcon')
+                    ->label('')
+                    ->width(32)->height(32)->extraImgAttributes(['class' => 'drop-shadow-lg rounded']),
                 Tables\Columns\TextColumn::make('domain')->searchable(),
-                Tables\Columns\TextColumn::make('created_at')->label('Date')->sortable()->dateTime(),
+
+// TODO:
+//                Tables\Columns\TextColumn::make('clients_count')->counts('clients')->label('Clients')->sortable(),
+                Tables\Columns\TextColumn::make('clicks_count')->counts('clicks')->label('Clicks')->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->label('Date')->sortable()->dateTime('Y-m-d H:i:s'),
             ])
             ->filters([
                 //
