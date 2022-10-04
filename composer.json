@@ -13,6 +13,8 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "spatie/emoji": "^4.0",
+        "stevebauman/location": "^6.5",
         "tedivm/jshrink": "^1.4"
     },
     "require-dev": {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Site;
 use Illuminate\Http\Request;
+use Stevebauman\Location\Facades\Location;
 
 class TrackController extends Controller
 {
@@ -17,11 +18,13 @@ class TrackController extends Controller
         // TODO:
         $site = Site::first();
 
-        $client = Client::firstOrCreate([
+        $client = Client::updateOrCreate([
             'identifier' => $request->anonymizedIdentifier(),
         ], [
+            'country' => Location::get()->countryCode ?? null,
             'width' => $request->input('width'),
             'height' => $request->input('height'),
+            'last_seen_at' => now()
         ]);
 
         $site->clicks()->create([
