@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()->create([
             'name' => 'Heatmap',
             'email' => 'info@heatmap.com',
+            'password' => bcrypt('password'),
         ]);
 
         Site::create([

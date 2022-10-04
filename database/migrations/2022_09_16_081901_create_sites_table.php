@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('hash')->nullable();
             $table->string('domain')->nullable()->index();
             $table->string('public')->nullable();
+            $table->boolean('track_clicks')->default(true);
+            $table->boolean('track_movements')->default(true);
 
             $table->timestamps();
         });
