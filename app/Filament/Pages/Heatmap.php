@@ -18,7 +18,7 @@ class Heatmap extends Page
     protected static bool $shouldRegisterNavigation = false;
 
     public $clicks;
-    public $url = '/test/Document.html';
+    public $url = '/';
     public $size = 'mdAndLg';
     public $site;
     public $frameWidth = Click::LG_BREAKPOINT - 1;
@@ -39,6 +39,8 @@ class Heatmap extends Page
 
         $this->getSite($site);
         $this->getClicks();
+
+        ray($this);
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -64,6 +66,7 @@ class Heatmap extends Page
     public function getSite($site)
     {
         $this->site = Site::findOrFail($site);
+        $this->url = $this->site->domain;
     }
 
     public function getClicks()

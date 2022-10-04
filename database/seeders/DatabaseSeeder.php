@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Site::create([
-            'domain' => 'heatmap.test',
+            'domain' => 'http://heatmap.test/test/Document.html',
         ]);
     }
 }
