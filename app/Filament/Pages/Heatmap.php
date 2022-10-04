@@ -19,9 +19,9 @@ class Heatmap extends Page
 
     public $clicks;
     public $url = '/test/Document.html';
-    public $size = 'lgAndXl';
+    public $size = 'mdAndLg';
     public $site;
-    public $frameWidth = Click::XL_BREAKPOINT - 1;
+    public $frameWidth = Click::LG_BREAKPOINT - 1;
     public $sizeCounts = [];
 
     protected $listeners = ['urlChanged' => 'changeUrl'];
