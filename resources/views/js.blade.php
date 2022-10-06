@@ -20,6 +20,7 @@ let HEATMAP = {
         }
 
         addEventListener('scroll', (event) => {
+            window.parent.postMessage(window.scrollY, '{{ $baseUrl }}')
             console.log(window.scrollY);
         });
 
