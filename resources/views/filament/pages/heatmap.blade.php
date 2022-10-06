@@ -53,11 +53,14 @@
 
         let iframe = document.querySelector('#iframe')
         let heatmap = document.getElementById('heatmapContainer')
-        iframe.addEventListener('load', e => {
-            e.target.contentWindow.addEventListener('scroll', e => {
-                let scroll = iframe.contentWindow.document.documentElement.scrollTop;
-                heatmap.style.transform = `translateY(${-scroll}px)`;
-            });
-        });
+        // iframe.addEventListener('message', e => {
+        //     console.log(e);
+        // })
+        // iframe.addEventListener('load', e => {
+        //     e.target.contentWindow.addEventListener('scroll', e => {
+        //         let scroll = iframe.contentWindow.document.documentElement.scrollTop;
+        //         heatmap.style.transform = `translateY(${-scroll}px)`;
+        //     });
+        // });
     </script>
 </x-filament::page>

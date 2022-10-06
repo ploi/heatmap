@@ -19,6 +19,10 @@ let HEATMAP = {
             // return;
         }
 
+        addEventListener('scroll', (event) => {
+            console.log(event);
+        });
+
         if (HEATMAP.settings.clicks) {
             HEATMAP.initClicks();
         }
