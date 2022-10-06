@@ -29,17 +29,9 @@ class Heatmap extends Page
 
     public function mount($site)
     {
-        $this->sizeCounts = [
-            'smAndLower' => Click::query()->smAndLower()->count(),
-            'smAndMd' => Click::query()->smAndMd()->count(),
-            'mdAndLg' => Click::query()->mdAndLg()->count(),
-            'lgAndXl' => Click::query()->lgAndXl()->count(),
-            'xlAndXxl' => Click::query()->xlAndXxl()->count(),
-            'xxlAndHigher' => Click::query()->xxlAndHigher()->count(),
-        ];
-
         $this->getSite($site);
         $this->getClicks();
+        $this->getClickCounts();
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -95,7 +87,7 @@ class Heatmap extends Page
                         $originalScaleWidth = 0;
 
                         // We only calculate if the breakpoint is higher than mobile
-                        if($click->width > Click::SM_BREAKPOINT - 1){
+                        if ($click->width > Click::SM_BREAKPOINT - 1) {
                             $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
                         }
 
@@ -106,6 +98,18 @@ class Heatmap extends Page
                     });
             })
             ->flatten(1);
+    }
+
+    public function getClickCounts()
+    {
+        $this->sizeCounts = [
+            'smAndLower' => $this->site->clicks()->smAndLower()->count(),
+            'smAndMd' => $this->site->clicks()->smAndMd()->count(),
+            'mdAndLg' => $this->site->clicks()->mdAndLg()->count(),
+            'lgAndXl' => $this->site->clicks()->lgAndXl()->count(),
+            'xlAndXxl' => $this->site->clicks()->xlAndXxl()->count(),
+            'xxlAndHigher' => $this->site->clicks()->xxlAndHigher()->count(),
+        ];
     }
 
     public function setFrameSize()
