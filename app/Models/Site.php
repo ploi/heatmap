@@ -20,7 +20,7 @@ class Site extends Model
         return Attribute::make(
             get: function () {
                 try {
-                    $favicon = Favicon::fetch('https://' . $this->attributes['domain'])
+                    $favicon = Favicon::fetch($this->attributes['domain'])
                         ->cache(now()->addWeek());
 
                     return $favicon->getFaviconUrl();
