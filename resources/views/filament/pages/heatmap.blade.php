@@ -53,9 +53,10 @@
 
         let iframe = document.querySelector('#iframe')
         let heatmap = document.getElementById('heatmapContainer')
-        // iframe.addEventListener('message', e => {
-        //     console.log(e);
-        // })
+        iframe.addEventListener('message', e => {
+            console.log('AWWD');
+            console.log(e);
+        })
         // iframe.addEventListener('load', e => {
         //     e.target.contentWindow.addEventListener('scroll', e => {
         //         let scroll = iframe.contentWindow.document.documentElement.scrollTop;
