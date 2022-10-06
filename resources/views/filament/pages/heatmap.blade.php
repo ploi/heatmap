@@ -24,7 +24,7 @@
         <div class="heatmap overlay relative z-[100] max-w-full" id="heatmapContainer">
         </div>
         <div class="h-auto w-auto absolute top-0 left-0 z-0">
-            <iframe src="{{ $url }}" class="max-w-full" id="iframe" title="iFrame" height="2500" width="{{ $frameWidth }}" frameborder="0"></iframe>
+            <iframe src="{{ $this->getFullUrl() }}" class="max-w-full" id="iframe" title="iFrame" height="2500" width="{{ $frameWidth }}" frameborder="0"></iframe>
         </div>
     </div>
 

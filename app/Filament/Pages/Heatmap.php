@@ -18,7 +18,8 @@ class Heatmap extends Page
     protected static bool $shouldRegisterNavigation = false;
 
     public $clicks;
-    public $url = '/';
+    public $url = null;
+    public $path = '/';
     public $size = 'mdAndLg';
     public $site;
     public $frameWidth = Click::LG_BREAKPOINT - 1;
@@ -39,8 +40,6 @@ class Heatmap extends Page
 
         $this->getSite($site);
         $this->getClicks();
-
-        ray($this);
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -66,7 +65,21 @@ class Heatmap extends Page
     public function getSite($site)
     {
         $this->site = Site::findOrFail($site);
-        $this->url = $this->site->domain;
+
+        $parse = parse_url($this->site->domain);
+
+        $this->url = $parse['scheme'] . '://' . $parse['host'];
+        $this->path = $parse['path'];
+    }
+
+    public function getFullUrl(): string
+    {
+        return $this->url . $this->path;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
     }
 
     public function getClicks()
@@ -74,12 +87,17 @@ class Heatmap extends Page
         $this->clicks = $this->site
             ->clicks()
             ->{$this->size}()
-            ->where('path', $this->url)
+            ->where('path', $this->getPath())
             ->get()
             ->map(function (Click $click) {
                 return collect($click->data)
                     ->map(function ($dataPoint) use ($click) {
-                        $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
+                        $originalScaleWidth = 0;
+
+                        // We only calculate if the breakpoint is higher than mobile
+                        if($click->width > Click::SM_BREAKPOINT - 1){
+                            $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
+                        }
 
                         return [
                             'x' => floor($dataPoint['x'] + $originalScaleWidth),
