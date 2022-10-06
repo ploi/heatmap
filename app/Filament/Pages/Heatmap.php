@@ -69,7 +69,7 @@ class Heatmap extends Page
         $parse = parse_url($this->site->domain);
 
         $this->url = $parse['scheme'] . '://' . $parse['host'];
-        $this->path = $parse['path'];
+        $this->path = $parse['path'] ?? '/';
     }
 
     public function getFullUrl(): string
