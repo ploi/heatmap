@@ -77,6 +77,7 @@ let HEATMAP = {
 
     trackScroll: () => {
         addEventListener('scroll', (event) => {
+            console.log('scroll');
             window.parent.postMessage(JSON.stringify({ task: 'scroll', scrollY: window.scrollY }), '{{ $baseUrl }}');
         });
     },
