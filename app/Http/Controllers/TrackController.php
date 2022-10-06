@@ -11,12 +11,11 @@ class TrackController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if (! $request->input('clicks')) {
+        if (!$request->input('clicks')) {
             return [];
         }
 
-        // TODO:
-        $site = Site::first();
+        $site = Site::where('hash', $request->input('hash'))->firstOrFail();
 
         $client = Client::updateOrCreate([
             'identifier' => $request->anonymizedIdentifier(),

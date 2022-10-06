@@ -1,9 +1,9 @@
 let HEATMAP = {
-    debug: false,
-
     settings: {
+        debug: Boolean(parseInt('{{ $debug === false ? "0" : "1" }}')),
         url: '{{ $url }}',
         baseUrl: '{{ $baseUrl }}',
+        hash: '{{ $hash }}',
         clicks: Boolean('{{ $clicks }}'),
         clicksThreshold: 10,
         movement: Boolean('{{ $movement }}'),
@@ -15,18 +15,20 @@ let HEATMAP = {
     },
 
     init: () => {
-        if(window.location.origin === HEATMAP.settings.baseUrl){
-            // return;
+        // Don't record the iframe inside the heatmap software unless debug mode is on
+        if (window.location.origin === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
+            return;
         }
 
-        addEventListener('scroll', (event) => {
-            window.parent.postMessage(window.scrollY, '{{ $baseUrl }}');
-        });
+        // Track scrolling (so the heatmap iframe scrolls along)
+        HEATMAP.trackScroll();
 
+        // Track clicks if enabled
         if (HEATMAP.settings.clicks) {
             HEATMAP.initClicks();
         }
 
+        // Track movement if enabled
         if (HEATMAP.settings.movement) {
             HEATMAP.trackMovement();
         }
@@ -73,7 +75,15 @@ let HEATMAP = {
 
     },
 
+    trackScroll: () => {
+        addEventListener('scroll', (event) => {
+            window.parent.postMessage(JSON.stringify({ task: 'scroll', scrollY: window.scrollY }), '{{ $baseUrl }}');
+        });
+    },
+
     send: async (data) => {
+        data.hash = HEATMAP.settings.hash;
+
         await fetch(HEATMAP.settings.url, {
             method: 'POST',
             keepalive: true,
