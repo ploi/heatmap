@@ -22,6 +22,7 @@ let HEATMAP = {
 
         // Track scrolling (so the heatmap iframe scrolls along)
         HEATMAP.trackScroll();
+        HEATMAP.trackNavigation();
 
         // Track clicks if enabled
         if (HEATMAP.settings.clicks) {
@@ -77,8 +78,15 @@ let HEATMAP = {
 
     trackScroll: () => {
         addEventListener('scroll', (event) => {
-            console.log('scroll');
-            window.parent.postMessage(JSON.stringify({ task: 'scroll', scrollY: window.scrollY }), '{{ $baseUrl }}');
+            window.parent.postMessage(JSON.stringify({ task: 'scroll', scrollY: window.scrollY }), HEATMAP.settings.baseUrl);
+        });
+    },
+
+    trackNavigation: () => {
+        addEventListener('beforeunload', (event) => {
+            ray(event.target);
+            console.log(event.target);
+            // window.parent.postMessage(JSON.stringify({ task: 'navigate', scrollY: window.scrollY }), '{{ $baseUrl }}');
         });
     },
 

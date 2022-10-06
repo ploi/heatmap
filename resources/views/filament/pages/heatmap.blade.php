@@ -30,9 +30,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             setHeatmapData();
 
-            // window.iframeURLChange(document.getElementById("iframe"), function (newURL) {
-            //     window.Livewire.emit('urlChanged', newURL)
-            // });
+            window.iframeURLChange(document.getElementById("heatmapIframe"), function (newURL) {
+                window.Livewire.emit('urlChanged', newURL)
+            });
 
             window.Livewire.on('heatmapNeedsRendering', () => {
                 setHeatmapData();
