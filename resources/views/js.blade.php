@@ -20,7 +20,7 @@ let HEATMAP = {
         }
 
         addEventListener('scroll', (event) => {
-            console.log(event);
+            console.log(window.scrollY);
         });
 
         if (HEATMAP.settings.clicks) {
