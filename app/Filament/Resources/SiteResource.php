@@ -58,7 +58,7 @@ class SiteResource extends Resource
                     ->modalActions([])
                     ->form([
                         Forms\Components\Textarea::make('tracker_code')->afterStateHydrated(function ($component, $state, $record, \Closure $set) {
-                            $set('tracker_code', '<script src="'.route('heatmap.js').'"></script>');
+                            $set('tracker_code', '<script src="'.route('heatmap.js', $record->hash).'"></script>');
                         }),
                     ]),
 
