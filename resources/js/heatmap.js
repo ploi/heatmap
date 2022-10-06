@@ -23,8 +23,8 @@ window.iframeURLChange = function(iframe, callback) {
     function attachUnload() {
         // Remove the unloadHandler in case it was already attached.
         // Otherwise, the change will be dispatched twice.
-        iframe.contentWindow.removeEventListener("unload", unloadHandler);
-        iframe.contentWindow.addEventListener("unload", unloadHandler);
+        // iframe.contentWindow.removeEventListener("unload", unloadHandler);
+        // iframe.contentWindow.addEventListener("unload", unloadHandler);
     }
 
     iframe.addEventListener("load", attachUnload);

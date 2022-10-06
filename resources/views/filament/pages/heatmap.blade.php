@@ -53,9 +53,8 @@
 
         let iframe = document.querySelector('#iframe')
         let heatmap = document.getElementById('heatmapContainer')
-        iframe.addEventListener('message', e => {
-            console.log('AWWD');
-            console.log(e);
+        window.addEventListener('message', e => {
+            heatmap.style.transform = `translateY(${-e.data}px)`;
         })
         // iframe.addEventListener('load', e => {
         //     e.target.contentWindow.addEventListener('scroll', e => {
