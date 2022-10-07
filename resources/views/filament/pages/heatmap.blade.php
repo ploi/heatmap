@@ -1,14 +1,6 @@
 <x-filament::page>
-    <style>
-        .heatmap {
-            height: {{ $frameHeight }}px;
-            width: {{ $frameWidth }}px;
-            max-width: 100%;
-        }
-    </style>
-
     <x-filament::card>
-        <div class="space-x-2">
+        <div class="grid grid-cols-6 space-x-2 gap-2">
             <x-filament::button wire:click="changeSize('smAndLower')">< SM ({{ $sizeCounts['smAndLower'] }})
             </x-filament::button>
             <x-filament::button wire:click="changeSize('smAndMd')">SM >< MD ({{ $sizeCounts['smAndMd'] }})
@@ -25,17 +17,20 @@
         </div>
     </x-filament::card>
 
-
-    <div class="bg-white rounded-lg shadow-xl overflow-hidden absolute max-w-full">
-        <div class="heatmap overlay pointer-events-none overflow-visible bg-none relative z-[100] max-w-full"
-             id="heatmapContainer">
-        </div>
-        <div class="h-auto w-auto absolute top-0 left-0 z-0">
-            <iframe src="{{ $this->getFullUrl() }}" class="max-w-full" id="heatmapIframe" title="Heatmap"
-                    height="{{ $frameHeight }}"
-                    width="{{ $frameWidth }}"></iframe>
+    <div class="flex justify-center">
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden absolute max-w-full">
+            <div class="heatmap overlay pointer-events-none overflow-visible bg-none relative z-[100] max-w-full"
+                 style="height: {{ $frameHeight }}px; width: {{ $frameWidth }}px;"
+                 id="heatmapContainer">
+            </div>
+            <div class="h-auto w-auto absolute top-0 left-0 z-0">
+                <iframe src="{{ $this->getFullUrl() }}" class="max-w-full" id="heatmapIframe" title="Heatmap"
+                        height="{{ $frameHeight }}"
+                        width="{{ $frameWidth }}"></iframe>
+            </div>
         </div>
     </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -39,7 +39,7 @@ class Heatmap extends Page
         return 'Heatmap - ' . $this->path;
     }
 
-    public function mount($site)
+    public function mount($site): void
     {
         $this->setDate(now());
         $this->getSite($site);
@@ -49,7 +49,7 @@ class Heatmap extends Page
         $this->emit('heatmapNeedsRendering');
     }
 
-    public function changeUrl($url)
+    public function changeUrl($url): void
     {
         $parse = parse_url($url);
 
@@ -57,11 +57,12 @@ class Heatmap extends Page
         $this->path = $parse['path'] ?? '/';
 
         $this->getClicks();
+        $this->getClickCounts();
 
         $this->emit('heatmapNeedsRendering');
     }
 
-    public function changeSize($size)
+    public function changeSize($size): void
     {
         $this->size = $size;
 
@@ -71,7 +72,7 @@ class Heatmap extends Page
         $this->emit('heatmapNeedsRendering');
     }
 
-    public function getSite($site)
+    public function getSite($site): void
     {
         $this->site = Site::findOrFail($site);
 
@@ -92,7 +93,7 @@ class Heatmap extends Page
         return $this->path;
     }
 
-    public function getClicks()
+    public function getClicks(): void
     {
         $this->clicks = $this->site
             ->clicks()
@@ -125,7 +126,7 @@ class Heatmap extends Page
             ->flatten(1);
     }
 
-    public function getClickCounts()
+    public function getClickCounts(): void
     {
         $this->sizeCounts = [
             'smAndLower' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndLower()->count(),
@@ -137,7 +138,7 @@ class Heatmap extends Page
         ];
     }
 
-    public function setFrameSize()
+    public function setFrameSize(): void
     {
         $this->frameWidth = match ($this->size) {
             'smAndLower' => Click::SM_BREAKPOINT - 1,
@@ -150,7 +151,7 @@ class Heatmap extends Page
         };
     }
 
-    public function setDate(Carbon $date, Carbon|null $endDate = null)
+    public function setDate(Carbon $date, Carbon|null $endDate = null): void
     {
         $this->date = $date;
         $this->endDate = $endDate;
