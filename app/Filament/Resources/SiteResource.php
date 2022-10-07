@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Pages\Heatmap;
 use App\Filament\Resources\SiteResource\Pages;
+use App\Filament\Resources\SiteResource\RelationManagers\ClicksRelationManager;
 use App\Models\Site;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -23,14 +24,29 @@ class SiteResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Card::make([
-                    Forms\Components\TextInput::make('domain')->required()->string(),
+                    Forms\Components\TextInput::make('domain')
+                        ->required()
+                        ->url()
+                        ->string(),
+                ])->columnSpan(1),
+                Forms\Components\Card::make([
                     Forms\Components\Fieldset::make('Tracking')
                         ->columnSpan(1)
-                    ->schema([
-                        Forms\Components\Checkbox::make('track_clicks'),
-                        Forms\Components\Checkbox::make('track_movements'),
-                    ]),
-                ])->columns(),
+                        ->schema([
+                            Forms\Components\Checkbox::make('track_clicks')->default(true),
+                            Forms\Components\Checkbox::make('track_movements'),
+
+                            Forms\Components\Textarea::make('tracker_code')
+                                ->visibleOn('edit')
+                                ->columnSpan(2)
+                                ->afterStateHydrated(function ($component, $state, $record, \Closure $set) {
+                                    if ($record) {
+                                        $set('tracker_code', $record->getTrackerCodeAsHtml());
+                                    }
+                                })
+                                ->helperText(new HtmlString('This is your tracker code, put this snippet between your <b>&lt;head&gt; .. &lt;/head&gt;</b> tags.'))
+                        ]),
+                ])->columnSpan(1)
             ]);
     }
 
@@ -51,7 +67,7 @@ class SiteResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('heatmap')
                     ->icon('heroicon-o-desktop-computer')
-                    ->url(fn ($record) => Heatmap::getUrl(['site' => $record->id])),
+                    ->url(fn($record) => Heatmap::getUrl(['site' => $record->id])),
 
                 Tables\Actions\Action::make('tracker_code')
                     ->action(function () {
@@ -60,11 +76,11 @@ class SiteResource extends Resource
                     ->icon('heroicon-o-code')
                     ->requiresConfirmation()
                     ->modalHeading('Tracker code')
-                    ->modalSubheading(new HtmlString('This is your tracker code, put this snippet between your <head></head> tags.'))
+                    ->modalSubheading(new HtmlString('This is your tracker code, put this snippet between your <b>&lt;head&gt; .. &lt;/head&gt;</b> tags.'))
                     ->modalActions([])
                     ->form([
                         Forms\Components\Textarea::make('tracker_code')->afterStateHydrated(function ($component, $state, $record, \Closure $set) {
-                            $set('tracker_code', '<script src="'.route('heatmap.js', $record->hash).'"></script>');
+                            $set('tracker_code', $record->getTrackerCodeAsHtml());
                         }),
                     ]),
 
@@ -78,7 +94,7 @@ class SiteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ClicksRelationManager::class
         ];
     }
 

@@ -36,6 +36,11 @@ class Site extends Model
         return $this->hasMany(Click::class);
     }
 
+    public function getTrackerCodeAsHtml(): string
+    {
+        return '<script src="'.route('heatmap.js', $this->hash).'" defer></script>';
+    }
+
     public static function booted()
     {
         static::creating(function (self $site) {
