@@ -32,7 +32,7 @@ class ClientResource extends Resource
                     ->sortable()
                     ->label('Clicks'),
                 Tables\Columns\TextColumn::make('country')->formatStateUsing(function ($record) {
-                    return $record->countryFlag.' '.strtoupper($record->country);
+                    return $record->countryFlag . ' ' . strtoupper($record->country);
                 }),
                 Tables\Columns\TextColumn::make('width'),
                 Tables\Columns\TextColumn::make('height'),
@@ -49,7 +49,8 @@ class ClientResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+//                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

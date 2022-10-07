@@ -17,12 +17,19 @@ class Client extends Model
     protected function countryFlag(): Attribute
     {
         return Attribute::make(
-            get: fn () => Emoji::countryFlag($this->attributes['country'] ?? 'us'),
+            get: fn() => Emoji::countryFlag($this->attributes['country'] ?? 'us'),
         );
     }
 
     public function clicks(): HasMany
     {
         return $this->hasMany(Click::class);
+    }
+
+    public static function booted()
+    {
+        static::deleting(function (self $client) {
+            $client->clicks()->delete();
+        });
     }
 }

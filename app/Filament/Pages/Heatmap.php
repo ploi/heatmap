@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Page;
+use Illuminate\Support\HtmlString;
 
 class Heatmap extends Page
 {
@@ -45,7 +46,7 @@ class Heatmap extends Page
 
     protected function getTitle(): string
     {
-        return 'Heatmap - '.$this->path;
+        return 'Heatmap · ' . $this->path;
     }
 
     public function mount($site): void
@@ -62,7 +63,7 @@ class Heatmap extends Page
     {
         $parse = parse_url($url);
 
-        $this->url = $parse['scheme'].'://'.$parse['host'];
+        $this->url = $parse['scheme'] . '://' . $parse['host'];
         $this->path = $parse['path'] ?? '/';
 
         $this->getClicks();
@@ -87,14 +88,14 @@ class Heatmap extends Page
 
         $parse = parse_url($this->site->domain);
 
-        $this->initialUrl = $parse['scheme'].'://'.$parse['host'];
-        $this->url = $parse['scheme'].'://'.$parse['host'];
+        $this->initialUrl = $parse['scheme'] . '://' . $parse['host'];
+        $this->url = $parse['scheme'] . '://' . $parse['host'];
         $this->path = $parse['path'] ?? '/';
     }
 
     public function getFullUrl(): string
     {
-        return $this->initialUrl.$this->path;
+        return $this->initialUrl . $this->path;
     }
 
     public function getPath(): string
