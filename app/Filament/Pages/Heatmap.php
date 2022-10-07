@@ -87,7 +87,6 @@ class Heatmap extends Page
 
     public function getClicks()
     {
-        ray('triggered');
         $this->clicks = $this->site
             ->clicks()
             ->{$this->size}()
