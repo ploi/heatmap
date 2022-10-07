@@ -20,6 +20,7 @@ class Heatmap extends Page
     protected static bool $shouldRegisterNavigation = false;
 
     public $clicks;
+    public $initialUrl = null;
     public $url = null;
     public $path = '/';
     public $size = 'mdAndLg';
@@ -42,7 +43,11 @@ class Heatmap extends Page
 
     public function changeUrl($url)
     {
-        $this->url = $url;
+        $parse = parse_url($url);
+
+        $this->url = $parse['scheme'] . '://' . $parse['host'];
+        $this->path = $parse['path'] ?? '/';
+
         $this->getClicks();
 
         $this->emit('heatmapNeedsRendering');
@@ -64,13 +69,14 @@ class Heatmap extends Page
 
         $parse = parse_url($this->site->domain);
 
+        $this->initialUrl = $parse['scheme'] . '://' . $parse['host'];
         $this->url = $parse['scheme'] . '://' . $parse['host'];
         $this->path = $parse['path'] ?? '/';
     }
 
     public function getFullUrl(): string
     {
-        return $this->url . $this->path;
+        return $this->initialUrl . $this->path;
     }
 
     public function getPath(): string

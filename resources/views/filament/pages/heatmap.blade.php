@@ -30,21 +30,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             setHeatmapData();
 
-            window.iframeURLChange(document.getElementById("heatmapIframe"), function (newURL) {
-                window.Livewire.emit('urlChanged', newURL)
-            });
-
             window.Livewire.on('heatmapNeedsRendering', () => {
                 setHeatmapData();
             })
-
-            let heatmap = document.getElementById('heatmapContainer')
-            window.addEventListener('message', e => {
-                let event = JSON.parse(e.data);
-                if (event.task === 'scroll') {
-                    heatmap.style.transform = `translateY(${-event.scrollY}px)`;
-                }
-            });
         });
 
         function setHeatmapData() {
@@ -55,5 +43,19 @@
                 data: @this.clicks
             });
         }
+
+        let heatmap = document.getElementById('heatmapContainer')
+        window.addEventListener('message', e => {
+            let event = JSON.parse(e.data);
+
+            if (event.task === 'scroll') {
+                heatmap.style.transform = `translateY(${-event.scrollY}px)`;
+            }
+
+            if (event.task === 'navigate') {
+                window.Livewire.emit('urlChanged', event.url)
+                console.log('IFRAME NAVIGATED TO ' + event.url)
+            }
+        });
     </script>
 </x-filament::page>

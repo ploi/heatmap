@@ -16,9 +16,9 @@ let HEATMAP = {
 
     init: () => {
         // Don't record the iframe inside the heatmap software unless debug mode is on
-        if (window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
-            return;
-        }
+        // if (window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
+        //     return;
+        // }
 
         // Track scrolling (so the heatmap iframe scrolls along)
         HEATMAP.trackScroll();
@@ -83,8 +83,8 @@ let HEATMAP = {
     },
 
     trackNavigation: () => {
-        addEventListener('beforeunload', (event) => {
-            // window.parent.postMessage(JSON.stringify({ task: 'navigate', scrollY: window.scrollY }), '{{ $baseUrl }}');
+        addEventListener('load', (event) => {
+            window.parent.postMessage(JSON.stringify({ task: 'navigate', url: window.location.href }), '{{ $baseUrl }}');
         });
     },
 
