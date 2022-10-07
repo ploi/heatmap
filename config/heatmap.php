@@ -2,6 +2,7 @@
 
 return [
     'tracker' => [
-        'obfuscate' => env('TRACKER_OBFUSCATE')
+        'obfuscate' => env('TRACKER_OBFUSCATE'),
+        'debug' => env('TRACKER_DEBUG')
     ]
 ];

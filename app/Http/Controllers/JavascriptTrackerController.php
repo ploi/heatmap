@@ -12,7 +12,7 @@ class JavascriptTrackerController extends Controller
     public function __invoke(Request $request, $hash)
     {
         $js = view('js', [
-            'debug' => false,
+            'debug' => config('heatmap.tracker.debug'),
             'baseUrl' => config('app.url'),
             'url' => route('track'),
             'hash' => $hash,

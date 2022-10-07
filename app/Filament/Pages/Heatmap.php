@@ -4,8 +4,10 @@ namespace App\Filament\Pages;
 
 use App\Models\Click;
 use App\Models\Site;
-use Filament\Forms\Components\Select;
+use Carbon\Carbon;
 use Filament\Pages\Page;
+use Filament\Forms;
+use Filament\Pages\Actions\Action;
 
 class Heatmap extends Page
 {
@@ -24,11 +26,13 @@ class Heatmap extends Page
     public $site;
     public $frameWidth = Click::LG_BREAKPOINT - 1;
     public $sizeCounts = [];
+    public Carbon|null $date = null;
 
     protected $listeners = ['urlChanged' => 'changeUrl'];
 
     public function mount($site)
     {
+        $this->setDate(now());
         $this->getSite($site);
         $this->getClicks();
         $this->getClickCounts();
@@ -80,6 +84,7 @@ class Heatmap extends Page
             ->clicks()
             ->{$this->size}()
             ->where('path', $this->getPath())
+            ->whereDate('created_at', $this->date->format('Y-m-d'))
             ->get()
             ->map(function (Click $click) {
                 return collect($click->data)
@@ -103,12 +108,12 @@ class Heatmap extends Page
     public function getClickCounts()
     {
         $this->sizeCounts = [
-            'smAndLower' => $this->site->clicks()->smAndLower()->count(),
-            'smAndMd' => $this->site->clicks()->smAndMd()->count(),
-            'mdAndLg' => $this->site->clicks()->mdAndLg()->count(),
-            'lgAndXl' => $this->site->clicks()->lgAndXl()->count(),
-            'xlAndXxl' => $this->site->clicks()->xlAndXxl()->count(),
-            'xxlAndHigher' => $this->site->clicks()->xxlAndHigher()->count(),
+            'smAndLower' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndLower()->count(),
+            'smAndMd' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndMd()->count(),
+            'mdAndLg' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->mdAndLg()->count(),
+            'lgAndXl' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->lgAndXl()->count(),
+            'xlAndXxl' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->xlAndXxl()->count(),
+            'xxlAndHigher' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->xxlAndHigher()->count(),
         ];
     }
 
@@ -123,5 +128,32 @@ class Heatmap extends Page
             'xxlAndHigher' => Click::XXL_BREAKPOINT - 1,
             default => Click::XL_BREAKPOINT - 1,
         };
+    }
+
+    public function setDate(Carbon $date)
+    {
+        $this->date = $date;
+    }
+
+    protected function getActions(): array
+    {
+        return [
+            Action::make('Filter date')
+                ->color('secondary')
+                ->action(function (array $data): void {
+                    $this->setDate(Carbon::parse($data['date']));
+
+                    $this->getClicks();
+                    $this->getClickCounts();
+
+                    $this->emit('heatmapNeedsRendering');
+                })
+                ->form([
+                    Forms\Components\DatePicker::make('date')
+                        ->format('Y-m-d')
+                        ->displayFormat('Y-m-d')
+                        ->default($this->date)
+                ])
+        ];
     }
 }

@@ -16,7 +16,7 @@ let HEATMAP = {
 
     init: () => {
         // Don't record the iframe inside the heatmap software unless debug mode is on
-        if (window.location.origin === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
+        if (window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
             return;
         }
 
@@ -84,8 +84,6 @@ let HEATMAP = {
 
     trackNavigation: () => {
         addEventListener('beforeunload', (event) => {
-            ray(event.target);
-            console.log(event.target);
             // window.parent.postMessage(JSON.stringify({ task: 'navigate', scrollY: window.scrollY }), '{{ $baseUrl }}');
         });
     },
