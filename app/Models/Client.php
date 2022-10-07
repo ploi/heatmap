@@ -17,7 +17,7 @@ class Client extends Model
     protected function countryFlag(): Attribute
     {
         return Attribute::make(
-            get: fn () => Emoji::countryFlag($this->attributes['country']),
+            get: fn () => Emoji::countryFlag($this->attributes['country'] ?? 'us'),
         );
     }
 
