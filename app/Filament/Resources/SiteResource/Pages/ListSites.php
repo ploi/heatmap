@@ -22,6 +22,6 @@ class ListSites extends ListRecords
 
     protected function getTableRecordUrlUsing(): ?Closure
     {
-        return fn(Site $record): string => Heatmap::getUrl(['site' => $record->id]);
+        return fn (Site $record): string => Heatmap::getUrl(['site' => $record->id]);
     }
 }

@@ -29,8 +29,8 @@ class SiteResource extends Resource
                     ->schema([
                         Forms\Components\Checkbox::make('track_clicks'),
                         Forms\Components\Checkbox::make('track_movements'),
-                    ])
-                ])->columns()
+                    ]),
+                ])->columns(),
             ]);
     }
 

@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms\Components\Card;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
@@ -43,19 +42,19 @@ class UserResource extends Resource
                     TextInput::make('password')
                         ->label('Password')
                         ->lazy()
-                        ->dehydrated(fn($state) => filled($state))
-                        ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->dehydrateStateUsing(fn ($state) => bcrypt($state))
                         ->helperText(function ($record) {
                             return $record ? 'Leave empty to keep current password' : 'Leave empty to generate a password.';
                         })
                         ->rules([
-                            'confirmed'
+                            'confirmed',
                         ])
                         ->password(),
                     TextInput::make('password_confirmation')
                         ->label('Password confirmation')
-                        ->dehydrated(fn($state) => filled($state))
-                        ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->dehydrateStateUsing(fn ($state) => bcrypt($state))
                         ->visible(function ($get) {
                             return filled($get('password'));
                         })
@@ -65,13 +64,13 @@ class UserResource extends Resource
                     Placeholder::make('created_at')
                         ->label('Created Date')
                         ->visibleOn('edit')
-                        ->content(fn(?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
+                        ->content(fn (?User $record): string => $record?->created_at?->diffForHumans() ?? '-'),
 
                     Placeholder::make('updated_at')
                         ->label('Last Modified Date')
                         ->visibleOn('edit')
-                        ->content(fn(?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
-                ])->columns()
+                        ->content(fn (?User $record): string => $record?->updated_at?->diffForHumans() ?? '-'),
+                ])->columns(),
             ]);
     }
 

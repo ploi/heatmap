@@ -39,13 +39,13 @@ class Site extends Model
     public static function booted()
     {
         static::creating(function (self $site) {
-            if (!$site->hash) {
+            if (! $site->hash) {
                 $site->hash = Str::random(25);
             }
         });
 
         static::updating(function (self $site) {
-            cache()->forget('site-' . $site->hash);
+            cache()->forget('site-'.$site->hash);
         });
     }
 }

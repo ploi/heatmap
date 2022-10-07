@@ -36,8 +36,8 @@ class JavascriptTrackerController extends Controller
 
     protected function getSite($hash): Site
     {
-        return cache()->remember('site-' . $hash, now()->addDay(), function() use($hash){
-           return Site::where('hash', $hash)->firstOrFail();
+        return cache()->remember('site-'.$hash, now()->addDay(), function () use ($hash) {
+            return Site::where('hash', $hash)->firstOrFail();
         });
     }
 }

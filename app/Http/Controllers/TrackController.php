@@ -11,7 +11,7 @@ class TrackController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if (!$request->input('clicks')) {
+        if (! $request->input('clicks')) {
             return [];
         }
 
@@ -23,7 +23,7 @@ class TrackController extends Controller
             'country' => Location::get()->countryCode ?? null,
             'width' => $request->input('width'),
             'height' => $request->input('height'),
-            'last_seen_at' => now()
+            'last_seen_at' => now(),
         ]);
 
         $site->clicks()->create([

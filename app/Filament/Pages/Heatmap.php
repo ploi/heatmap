@@ -6,9 +6,8 @@ use App\Models\Click;
 use App\Models\Site;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
-use Filament\Forms;
 use Filament\Pages\Actions\Action;
+use Filament\Pages\Page;
 
 class Heatmap extends Page
 {
@@ -21,22 +20,32 @@ class Heatmap extends Page
     protected static bool $shouldRegisterNavigation = false;
 
     public $clicks;
+
     public $initialUrl = null;
+
     public $url = null;
+
     public $path = '/';
+
     public $size = 'mdAndLg';
+
     public $site;
+
     public $frameWidth = Click::LG_BREAKPOINT - 1;
+
     public $frameHeight = 2500;
+
     public $sizeCounts = [];
+
     public Carbon|null $date = null;
+
     public Carbon|null $endDate = null;
 
     protected $listeners = ['urlChanged' => 'changeUrl'];
 
     protected function getTitle(): string
     {
-        return 'Heatmap - ' . $this->path;
+        return 'Heatmap - '.$this->path;
     }
 
     public function mount($site): void
@@ -53,7 +62,7 @@ class Heatmap extends Page
     {
         $parse = parse_url($url);
 
-        $this->url = $parse['scheme'] . '://' . $parse['host'];
+        $this->url = $parse['scheme'].'://'.$parse['host'];
         $this->path = $parse['path'] ?? '/';
 
         $this->getClicks();
@@ -78,14 +87,14 @@ class Heatmap extends Page
 
         $parse = parse_url($this->site->domain);
 
-        $this->initialUrl = $parse['scheme'] . '://' . $parse['host'];
-        $this->url = $parse['scheme'] . '://' . $parse['host'];
+        $this->initialUrl = $parse['scheme'].'://'.$parse['host'];
+        $this->url = $parse['scheme'].'://'.$parse['host'];
         $this->path = $parse['path'] ?? '/';
     }
 
     public function getFullUrl(): string
     {
-        return $this->initialUrl . $this->path;
+        return $this->initialUrl.$this->path;
     }
 
     public function getPath(): string

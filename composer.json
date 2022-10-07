@@ -58,6 +58,9 @@
         ],
         "test": [
             "vendor/bin/pest"
+        ],
+        "format": [
+            "vendor/bin/pint"
         ]
     },
     "extra": {
