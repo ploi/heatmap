@@ -11,13 +11,15 @@ class JavascriptTrackerController extends Controller
 {
     public function __invoke(Request $request, $hash)
     {
+        $site = $this->getSite($hash);
+
         $js = view('js', [
             'debug' => config('heatmap.tracker.debug'),
             'baseUrl' => config('app.url'),
             'url' => route('track'),
             'hash' => $hash,
-            'clicks' => true,
-            'movement' => false,
+            'clicks' => $site->track_clicks,
+            'movement' => $site->track_movements,
         ])->render();
 
         if (config('heatmap.tracker.obfuscate')) {
@@ -30,5 +32,12 @@ class JavascriptTrackerController extends Controller
 
         return response($js)
             ->header('Content-Type', 'application/javascript');
+    }
+
+    protected function getSite($hash): Site
+    {
+        return cache()->remember('site-' . $hash, now()->addDay(), function() use($hash){
+           return Site::where('hash', $hash)->firstOrFail();
+        });
     }
 }

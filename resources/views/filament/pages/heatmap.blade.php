@@ -1,7 +1,7 @@
 <x-filament::page>
     <style>
         .heatmap {
-            height: 2500px;
+            height: {{ $frameHeight }}px;
             width: {{ $frameWidth }}px;
             max-width: 100%;
         }
@@ -21,7 +21,7 @@
         <div class="heatmap overlay pointer-events-none overflow-visible bg-none relative z-[100] max-w-full" id="heatmapContainer">
         </div>
         <div class="h-auto w-auto absolute top-0 left-0 z-0">
-            <iframe src="{{ $this->getFullUrl() }}" class="max-w-full" id="heatmapIframe" title="Heatmap" height="2500"
+            <iframe src="{{ $this->getFullUrl() }}" class="max-w-full" id="heatmapIframe" title="Heatmap" height="{{ $frameHeight }}"
                     width="{{ $frameWidth }}"></iframe>
         </div>
     </div>

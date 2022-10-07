@@ -26,6 +26,7 @@ class Heatmap extends Page
     public $size = 'mdAndLg';
     public $site;
     public $frameWidth = Click::LG_BREAKPOINT - 1;
+    public $frameHeight = 2500;
     public $sizeCounts = [];
     public Carbon|null $date = null;
 
@@ -86,6 +87,7 @@ class Heatmap extends Page
 
     public function getClicks()
     {
+        ray('triggered');
         $this->clicks = $this->site
             ->clicks()
             ->{$this->size}()

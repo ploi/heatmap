@@ -23,8 +23,14 @@ class SiteResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Card::make([
-                    Forms\Components\TextInput::make('domain')->required()->string()
-                ])
+                    Forms\Components\TextInput::make('domain')->required()->string(),
+                    Forms\Components\Fieldset::make('Tracking')
+                        ->columnSpan(1)
+                    ->schema([
+                        Forms\Components\Checkbox::make('track_clicks'),
+                        Forms\Components\Checkbox::make('track_movements'),
+                    ])
+                ])->columns()
             ]);
     }
 

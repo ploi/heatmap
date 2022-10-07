@@ -4,9 +4,9 @@ let HEATMAP = {
         url: '{{ $url }}',
         baseUrl: '{{ $baseUrl }}',
         hash: '{{ $hash }}',
-        clicks: Boolean('{{ $clicks }}'),
+        clicks: Boolean(parseInt('{{ $clicks }}')),
         clicksThreshold: 10,
-        movement: Boolean('{{ $movement }}'),
+        movement: Boolean(parseInt('{{ $movement }}')),
     },
 
     data: {
@@ -15,14 +15,16 @@ let HEATMAP = {
     },
 
     init: () => {
-        // Don't record the iframe inside the heatmap software unless debug mode is on
-        // if (window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl && !HEATMAP.settings.debug) {
-        //     return;
-        // }
+        if (HEATMAP.isLoadedInHeatmap()) {
+            HEATMAP.trackIframeScroll();
+            HEATMAP.trackIframeNavigation();
+        }
 
-        // Track scrolling (so the heatmap iframe scrolls along)
-        HEATMAP.trackScroll();
-        HEATMAP.trackNavigation();
+        // When we're inside the iframe, we want to track scrolling and navigation. We'll also return from this
+        // function to prevent tracking movements and/or clicks from the heatmap software.
+        if (HEATMAP.isLoadedInHeatmap() && !HEATMAP.settings.debug) {
+            return;
+        }
 
         // Track clicks if enabled
         if (HEATMAP.settings.clicks) {
@@ -76,15 +78,15 @@ let HEATMAP = {
 
     },
 
-    trackScroll: () => {
+    trackIframeScroll: () => {
         addEventListener('scroll', (event) => {
-            window.parent.postMessage(JSON.stringify({ task: 'scroll', scrollY: window.scrollY }), HEATMAP.settings.baseUrl);
+            HEATMAP.sendMessage({task: 'scroll', scrollY: window.scrollY})
         });
     },
 
-    trackNavigation: () => {
+    trackIframeNavigation: () => {
         addEventListener('load', (event) => {
-            window.parent.postMessage(JSON.stringify({ task: 'navigate', url: window.location.href }), '{{ $baseUrl }}');
+            HEATMAP.sendMessage({task: 'navigate', url: window.location.href})
         });
     },
 
@@ -103,7 +105,7 @@ let HEATMAP = {
             .then((response) => response.json())
     },
 
-    getWidth: function () {
+    getWidth: () => {
         return Math.max(
             document.body.scrollWidth,
             document.documentElement.scrollWidth,
@@ -113,7 +115,7 @@ let HEATMAP = {
         );
     },
 
-    getHeight: function () {
+    getHeight: () => {
         return Math.max(
             document.body.scrollHeight,
             document.documentElement.scrollHeight,
@@ -123,13 +125,13 @@ let HEATMAP = {
         );
     },
 
-    windowWidth: function () {
-        return Math.max(document.documentElement.clientWidth, window.innerWidth || 0) | 0;
+    sendMessage: (payload) => {
+        window.parent.postMessage(JSON.stringify(payload), '{{ $baseUrl }}');
     },
 
-    windowHeight: function () {
-        return (window.innerHeight || document.documentElement.clientHeight) | 0;
-    },
+    isLoadedInHeatmap: () => {
+        return window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl;
+    }
 };
 
 document.addEventListener('DOMContentLoaded', (e) => {

@@ -43,5 +43,9 @@ class Site extends Model
                 $site->hash = Str::random(25);
             }
         });
+
+        static::updating(function (self $site) {
+            cache()->forget('site-' . $site->hash);
+        });
     }
 }
