@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Click;
 use App\Models\Site;
 use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Forms;
 use Filament\Pages\Actions\Action;
@@ -29,8 +30,14 @@ class Heatmap extends Page
     public $frameHeight = 2500;
     public $sizeCounts = [];
     public Carbon|null $date = null;
+    public Carbon|null $endDate = null;
 
     protected $listeners = ['urlChanged' => 'changeUrl'];
+
+    protected function getTitle(): string
+    {
+        return 'Heatmap - ' . $this->path;
+    }
 
     public function mount($site)
     {
@@ -91,7 +98,13 @@ class Heatmap extends Page
             ->clicks()
             ->{$this->size}()
             ->where('path', $this->getPath())
-            ->whereDate('created_at', $this->date->format('Y-m-d'))
+            ->when($this->endDate, function ($query) {
+                return $query
+                    ->where('created_at', '>=', $this->date)
+                    ->where('created_at', '<=', $this->endDate);
+            }, function ($query) {
+                return $query->whereDate('created_at', $this->date->format('Y-m-d'));
+            })
             ->get()
             ->map(function (Click $click) {
                 return collect($click->data)
@@ -137,30 +150,59 @@ class Heatmap extends Page
         };
     }
 
-    public function setDate(Carbon $date)
+    public function setDate(Carbon $date, Carbon|null $endDate = null)
     {
         $this->date = $date;
+        $this->endDate = $endDate;
     }
 
     protected function getActions(): array
     {
         return [
-            Action::make('Filter date')
+            Action::make('this_week')
                 ->color('secondary')
-                ->action(function (array $data): void {
-                    $this->setDate(Carbon::parse($data['date']));
+                ->action(function () {
+                    $this->setDate(now()->endOfDay(), now()->subWeek()->startOfDay());
 
                     $this->getClicks();
                     $this->getClickCounts();
 
                     $this->emit('heatmapNeedsRendering');
+
+                    Notification::make()->success()->title('Filter')->body('Showing data from this week')->send();
+                }),
+
+            Action::make('yesterday')
+                ->color('secondary')
+                ->disabled(function () {
+                    return $this->date->isYesterday();
                 })
-                ->form([
-                    Forms\Components\DatePicker::make('date')
-                        ->format('Y-m-d')
-                        ->displayFormat('Y-m-d')
-                        ->default($this->date)
-                ])
+                ->action(function () {
+                    $this->setDate(now()->subDay());
+
+                    $this->getClicks();
+                    $this->getClickCounts();
+
+                    $this->emit('heatmapNeedsRendering');
+
+                    Notification::make()->success()->title('Filter')->body('Showing data from yesterday')->send();
+                }),
+
+            Action::make('today')
+                ->color('secondary')
+                ->disabled(function () {
+                    return $this->date->isToday();
+                })
+                ->action(function () {
+                    $this->setDate(now());
+
+                    $this->getClicks();
+                    $this->getClickCounts();
+
+                    $this->emit('heatmapNeedsRendering');
+
+                    Notification::make()->success()->title('Filter')->body('Showing data from today')->send();
+                }),
         ];
     }
 }
