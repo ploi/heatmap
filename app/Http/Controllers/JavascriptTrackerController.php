@@ -20,6 +20,9 @@ class JavascriptTrackerController extends Controller
             'hash' => $hash,
             'clicks' => $site->track_clicks,
             'movement' => $site->track_movements,
+            'clickThreshold' => 10,
+            'movementsThreshold' => 10,
+            'movementDebounce' => 75
         ])->render();
 
         if (config('heatmap.tracker.obfuscate')) {
@@ -36,7 +39,7 @@ class JavascriptTrackerController extends Controller
 
     protected function getSite($hash): Site
     {
-        return cache()->remember('site-'.$hash, now()->addDay(), function () use ($hash) {
+        return cache()->remember('site-' . $hash, now()->addDay(), function () use ($hash) {
             return Site::where('hash', $hash)->firstOrFail();
         });
     }

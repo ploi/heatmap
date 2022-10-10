@@ -6,7 +6,9 @@ use App\Filament\Pages\Heatmap;
 use App\Filament\Resources\SiteResource\Pages;
 use App\Filament\Resources\SiteResource\RelationManagers\ClicksRelationManager;
 use App\Models\Site;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -34,7 +36,7 @@ class SiteResource extends Resource
                         ->columnSpan(1)
                         ->schema([
                             Forms\Components\Checkbox::make('track_clicks')->default(true),
-                            Forms\Components\Checkbox::make('track_movements'),
+                            Forms\Components\Checkbox::make('track_movements')->helperText('Be aware that tracking movements can accumulate data very quickly.'),
 
                             Forms\Components\Textarea::make('tracker_code')
                                 ->visibleOn('edit')
@@ -86,6 +88,42 @@ class SiteResource extends Resource
                     ]),
 
                 Tables\Actions\EditAction::make(),
+
+                Tables\Actions\Action::make('purge')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalSubheading('Select the types you want to purge the data of.')
+                    ->form([
+                        Forms\Components\DatePicker::make('before')->helperText('Optionally select a date you want to purge the data before.'),
+                        Forms\Components\CheckboxList::make('purge')
+                            ->options([
+                                'clicks' => 'Clicks',
+                                'movements' => 'Movements'
+                            ])
+                            ->default(['clicks'])
+                    ])
+                    ->action(function (array $data, $record) {
+                        if (in_array('clicks', $data['purge'])) {
+                            $record->clicks()
+                                ->when($data['before'], function ($query) use ($data) {
+                                    return $query->where('created_at', '<', Carbon::parse($data['before']));
+                                })
+                                ->delete();
+                        }
+
+                        if (in_array('movements', $data['purge'])) {
+                            $record->movements()
+                                ->when($data['before'], function ($query) use ($data) {
+                                    return $query->where('created_at', '<', Carbon::parse($data['before']));
+                                })
+                                ->delete();
+                        }
+
+                        Notification::make()->success()
+                            ->title('Purge')
+                            ->body('Data has been cleared')->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

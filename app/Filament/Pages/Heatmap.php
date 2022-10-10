@@ -173,11 +173,25 @@ class Heatmap extends Page
     protected function getActions(): array
     {
         return [
-            Action::make('Movements')
+            Action::make('Purge')
+                ->color('danger')
+                ->action(function () {
+                    $this->site->{$this->type}()->delete();
+
+                    Notification::make()->success()
+                        ->title('Purge')
+                        ->body('Data has been purged.')->send();
+                })
+                ->modalSubheading(function () {
+                    return 'Are you sure you want to purge data for ' . $this->type . '?';
+                })
+                ->requiresConfirmation(),
+            Action::make('type')
+                ->visible(fn() => $this->site->track_movements)
                 ->label(function () {
                     return $this->type === 'clicks' ? 'Movements' : 'Clicks';
                 })
-                ->color('secondary')
+                ->color('primary')
                 ->action(function () {
                     $this->type = $this->type === 'clicks' ? 'movements' : 'clicks';
 
@@ -186,9 +200,11 @@ class Heatmap extends Page
 
                     $this->emit('heatmapNeedsRendering');
 
-                    Notification::make()->success()->title('Type')->body(function () {
-                        return 'Showing ' . ($this->type === 'clicks' ? 'clicks' : 'movements');
-                    })->send();
+                    Notification::make()->success()
+                        ->title('Type')
+                        ->body(function () {
+                            return 'Showing ' . ($this->type === 'clicks' ? 'clicks' : 'movements');
+                        })->send();
                 }),
 
             Action::make('this_week')

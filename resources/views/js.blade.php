@@ -5,8 +5,9 @@ let HEATMAP = {
         baseUrl: '{{ $baseUrl }}',
         hash: '{{ $hash }}',
         clicks: Boolean(parseInt('{{ $clicks }}')),
-        clicksThreshold: 10,
-        movementsThreshold: 10,
+        clicksThreshold: parseInt('{{ $clickThreshold }}'),
+        movementsThreshold: parseInt('{{ $movementsThreshold }}'),
+        movementDebounce: parseInt('{{ $movementDebounce }}'),
         movement: Boolean(parseInt('{{ $movement }}')),
     },
 
@@ -80,6 +81,7 @@ let HEATMAP = {
                 y: e.pageY,
             });
 
+            // Filter unique items per client
             HEATMAP.data.movements = HEATMAP.data.movements.reduce((acc, current) => {
                 const x = acc.find(item => item.x === current.x);
                 const y = acc.find(item => item.y === current.y);
@@ -90,14 +92,12 @@ let HEATMAP = {
                 }
             }, []);
 
-            console.log(HEATMAP.data.movements);
-
             if (HEATMAP.data.movements.length >= HEATMAP.settings.movementsThreshold) {
                 await HEATMAP.trackMovements();
 
                 HEATMAP.data.movements = [];
             }
-        }, 75);
+        }, HEATMAP.settings.movementDebounce);
 
         window.addEventListener('mousemove', handleMouseMove);
 
