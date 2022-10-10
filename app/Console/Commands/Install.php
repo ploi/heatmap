@@ -29,6 +29,13 @@ class Install extends Command
         $this->writeSeparationLine();
         $this->line(' ');
 
+        $this->line('Be sure to also configure your website\'s webserver if you get an X-Frame-Options error.');
+        $this->line('More information: https://github.com/ploi-deploy/heatmap#setting-up-your-webserver-to-allow-x-frame-options');
+
+        $this->line(' ');
+        $this->writeSeparationLine();
+        $this->line(' ');
+
         $this->info('All done! You can now login at '.route('filament.auth.login'));
     }
 
