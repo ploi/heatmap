@@ -1,3 +1,5 @@
+> ⚠️ We do not recommend to use this in production yet as many things are subject to change.
+
 ![Heatmap screenshot](/public/screenshots/screenshot.png)
 
 # Heatmap
