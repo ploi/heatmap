@@ -26,18 +26,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Filament::registerScripts([
-            app(Vite::class)('resources/js/heatmap.js'),
-        ]);
+        if (file_exists(public_path('build/manifest.json'))) {
+            Filament::registerScripts([
+                app(Vite::class)('resources/js/heatmap.js'),
+            ]);
 
-        Filament::serving(function () {
-            Filament::registerTheme(
-                app(Vite::class)('resources/css/filament.css'),
-            );
-        });
+            Filament::serving(function () {
+                Filament::registerTheme(
+                    app(Vite::class)('resources/css/filament.css'),
+                );
+            });
+        }
 
         Request::macro('anonymizedIdentifier', function () {
-            return hash('sha512', base64_encode($this->ip().'.'.$this->userAgent()));
+            return hash('sha512', base64_encode($this->ip() . '.' . $this->userAgent()));
         });
     }
 }
