@@ -29,17 +29,17 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
-
-      - name: Generate key
-        run: php artisan key:generate
-
       - name: Run npm install
         run: npm install
 
       - name: Run npm run production
         run: npm run production
+        
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Generate key
+        run: php artisan key:generate
 
       - name: Run test suite
         run: ./vendor/bin/pest
