@@ -13,6 +13,7 @@ Welcome to Heatmap, the open-source software for your heatmapping needs 🖥
 
 - PHP >= 8.1
 - Database (MySQL, PostgreSQL)
+- Ability to configure x-frame options in your website
 
 ## Installation
 
@@ -72,6 +73,39 @@ echo "🚀 Application deployed!"
 ```
 
 If you're using queue workers (which we recommend to do) also add `php artisan queue:restart` to your deployment script.
+
+## Setting up your webserver to allow X-Frame-Options
+Chances are, when you're setting up the heatmap software and trying to display the heatmap you'll encounter an error like:
+
+```
+Refused to display 'https://yourwebsite.com' in a frame because it set 'X-Frame-Options' to 'sameorigin'.
+```
+
+This means, it won't allow external iframes to load in your website. Luckily, this is easily solvable.
+
+### NGINX
+
+If you have this line in your NGINX host configuration, either remove it, or put it in comments:
+
+```
+add_header X-Frame-Options "SAMEORIGIN";
+
+to (or remove)
+
+#add_header X-Frame-Options "SAMEORIGIN";
+```
+
+Next add this piece of code inside the `server{}` block:
+
+```
+add_header Content-Security-Policy "frame-ancestors 'self' https://your-heatmap-address.com";
+```
+
+Obviously, replace **your-heatmap-address.com** with the actual domain where your heatmap is hosted.
+
+### Apache
+
+TODO
 
 ## Testing
 
