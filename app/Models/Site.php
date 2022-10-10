@@ -36,6 +36,11 @@ class Site extends Model
         return $this->hasMany(Click::class);
     }
 
+    public function movements(): HasMany
+    {
+        return $this->hasMany(Movement::class);
+    }
+
     public function getTrackerCodeAsHtml(): string
     {
         return '<script src="'.route('heatmap.js', $this->hash).'" defer></script>';

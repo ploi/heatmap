@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Click;
+use App\Models\Movement;
 use App\Models\Site;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
@@ -42,6 +43,8 @@ class Heatmap extends Page
 
     public Carbon|null $endDate = null;
 
+    public string $type = 'clicks';
+
     protected $listeners = ['urlChanged' => 'changeUrl'];
 
     protected function getTitle(): string
@@ -53,8 +56,8 @@ class Heatmap extends Page
     {
         $this->setDate(now());
         $this->getSite($site);
-        $this->getClicks();
-        $this->getClickCounts();
+        $this->getData();
+        $this->getCounters();
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -66,8 +69,8 @@ class Heatmap extends Page
         $this->url = $parse['scheme'] . '://' . $parse['host'];
         $this->path = $parse['path'] ?? '/';
 
-        $this->getClicks();
-        $this->getClickCounts();
+        $this->getData();
+        $this->getCounters();
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -77,7 +80,7 @@ class Heatmap extends Page
         $this->size = $size;
 
         $this->setFrameSize();
-        $this->getClicks();
+        $this->getData();
 
         $this->emit('heatmapNeedsRendering');
     }
@@ -103,10 +106,10 @@ class Heatmap extends Page
         return $this->path;
     }
 
-    public function getClicks(): void
+    public function getData(): void
     {
         $this->clicks = $this->site
-            ->clicks()
+            ->{$this->type}()
             ->{$this->size}()
             ->where('path', $this->getPath())
             ->when($this->endDate, function ($query) {
@@ -117,14 +120,14 @@ class Heatmap extends Page
                 return $query->whereDate('created_at', $this->date->format('Y-m-d'));
             })
             ->get()
-            ->map(function (Click $click) {
-                return collect($click->data)
-                    ->map(function ($dataPoint) use ($click) {
+            ->map(function (Click|Movement $model) {
+                return collect($model->data)
+                    ->map(function ($dataPoint) use ($model) {
                         $originalScaleWidth = 0;
 
                         // We only calculate if the breakpoint is higher than mobile
-                        if ($click->width > Click::SM_BREAKPOINT - 1) {
-                            $originalScaleWidth = ($this->frameWidth - $click->width) / 2;
+                        if ($model->width > Click::SM_BREAKPOINT - 1) {
+                            $originalScaleWidth = ($this->frameWidth - $model->width) / 2;
                         }
 
                         return [
@@ -136,15 +139,15 @@ class Heatmap extends Page
             ->flatten(1);
     }
 
-    public function getClickCounts(): void
+    public function getCounters(): void
     {
         $this->sizeCounts = [
-            'smAndLower' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndLower()->count(),
-            'smAndMd' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndMd()->count(),
-            'mdAndLg' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->mdAndLg()->count(),
-            'lgAndXl' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->lgAndXl()->count(),
-            'xlAndXxl' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->xlAndXxl()->count(),
-            'xxlAndHigher' => $this->site->clicks()->whereDate('created_at', $this->date->format('Y-m-d'))->xxlAndHigher()->count(),
+            'smAndLower' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndLower()->count(),
+            'smAndMd' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->smAndMd()->count(),
+            'mdAndLg' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->mdAndLg()->count(),
+            'lgAndXl' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->lgAndXl()->count(),
+            'xlAndXxl' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->xlAndXxl()->count(),
+            'xxlAndHigher' => $this->site->{$this->type}()->whereDate('created_at', $this->date->format('Y-m-d'))->xxlAndHigher()->count(),
         ];
     }
 
@@ -170,13 +173,31 @@ class Heatmap extends Page
     protected function getActions(): array
     {
         return [
+            Action::make('Movements')
+                ->label(function () {
+                    return $this->type === 'clicks' ? 'Movements' : 'Clicks';
+                })
+                ->color('secondary')
+                ->action(function () {
+                    $this->type = $this->type === 'clicks' ? 'movements' : 'clicks';
+
+                    $this->getData();
+                    $this->getCounters();
+
+                    $this->emit('heatmapNeedsRendering');
+
+                    Notification::make()->success()->title('Type')->body(function () {
+                        return 'Showing ' . ($this->type === 'clicks' ? 'clicks' : 'movements');
+                    })->send();
+                }),
+
             Action::make('this_week')
                 ->color('secondary')
                 ->action(function () {
                     $this->setDate(now()->endOfDay(), now()->subWeek()->startOfDay());
 
-                    $this->getClicks();
-                    $this->getClickCounts();
+                    $this->getData();
+                    $this->getCounters();
 
                     $this->emit('heatmapNeedsRendering');
 
@@ -191,8 +212,8 @@ class Heatmap extends Page
                 ->action(function () {
                     $this->setDate(now()->subDay());
 
-                    $this->getClicks();
-                    $this->getClickCounts();
+                    $this->getData();
+                    $this->getCounters();
 
                     $this->emit('heatmapNeedsRendering');
 
@@ -202,13 +223,13 @@ class Heatmap extends Page
             Action::make('today')
                 ->color('secondary')
                 ->disabled(function () {
-                    return $this->date->isToday();
+                    return $this->date->isToday() && !$this->endDate;
                 })
                 ->action(function () {
                     $this->setDate(now());
 
-                    $this->getClicks();
-                    $this->getClickCounts();
+                    $this->getData();
+                    $this->getCounters();
 
                     $this->emit('heatmapNeedsRendering');
 

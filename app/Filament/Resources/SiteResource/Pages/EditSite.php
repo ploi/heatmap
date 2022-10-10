@@ -10,6 +10,13 @@ class EditSite extends EditRecord
 {
     protected static string $resource = SiteResource::class;
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        unset($data['tracker_code']);
+
+        return $data;
+    }
+
     protected function getActions(): array
     {
         return [

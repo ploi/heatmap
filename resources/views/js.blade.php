@@ -6,12 +6,13 @@ let HEATMAP = {
         hash: '{{ $hash }}',
         clicks: Boolean(parseInt('{{ $clicks }}')),
         clicksThreshold: 10,
+        movementsThreshold: 10,
         movement: Boolean(parseInt('{{ $movement }}')),
     },
 
     data: {
         clicks: [],
-        movement: []
+        movements: []
     },
 
     init: () => {
@@ -33,19 +34,17 @@ let HEATMAP = {
 
         // Track movement if enabled
         if (HEATMAP.settings.movement) {
-            HEATMAP.trackMovement();
+            HEATMAP.initMovements();
         }
     },
 
     initClicks: () => {
         // When the user clicks
         addEventListener('click', async (e) => {
-            let data = {
+            HEATMAP.data.clicks.push({
                 x: e.pageX,
                 y: e.pageY,
-            };
-
-            HEATMAP.data.clicks.push(data);
+            });
 
             if (HEATMAP.data.clicks.length >= HEATMAP.settings.clicksThreshold) {
                 await HEATMAP.trackClicks();
@@ -74,8 +73,51 @@ let HEATMAP = {
         });
     },
 
-    trackMovement: () => {
+    initMovements: () => {
+        const handleMouseMove = HEATMAP.debounce(async (e) => {
+            HEATMAP.data.movements.push({
+                x: e.pageX,
+                y: e.pageY,
+            });
 
+            HEATMAP.data.movements = HEATMAP.data.movements.reduce((acc, current) => {
+                const x = acc.find(item => item.x === current.x);
+                const y = acc.find(item => item.y === current.y);
+                if (!x && !y) {
+                    return acc.concat([current]);
+                } else {
+                    return acc;
+                }
+            }, []);
+
+            console.log(HEATMAP.data.movements);
+
+            if (HEATMAP.data.movements.length >= HEATMAP.settings.movementsThreshold) {
+                await HEATMAP.trackMovements();
+
+                HEATMAP.data.movements = [];
+            }
+        }, 75);
+
+        window.addEventListener('mousemove', handleMouseMove);
+
+        addEventListener('beforeunload', async (e) => {
+            await HEATMAP.trackMovements();
+        });
+    },
+
+    trackMovements: async () => {
+        // Don't send any data, if we don't have any
+        if (!HEATMAP.data.movements.length) {
+            return;
+        }
+
+        await HEATMAP.send({
+            movements: HEATMAP.data.movements,
+            width: HEATMAP.getWidth(),
+            height: HEATMAP.getHeight(),
+            path: window.location.pathname
+        });
     },
 
     trackIframeScroll: () => {
@@ -131,6 +173,16 @@ let HEATMAP = {
 
     isLoadedInHeatmap: () => {
         return window.location.ancestorOrigins[0] === HEATMAP.settings.baseUrl;
+    },
+
+    debounce: (callback, wait) => {
+        let timeoutId = null;
+        return (...args) => {
+            window.clearTimeout(timeoutId);
+            timeoutId = window.setTimeout(() => {
+                callback.apply(null, args);
+            }, wait);
+        };
     }
 };
 

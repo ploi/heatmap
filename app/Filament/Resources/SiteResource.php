@@ -59,6 +59,7 @@ class SiteResource extends Resource
                     ->width(32)->height(32)->extraImgAttributes(['class' => 'drop-shadow-lg rounded']),
                 Tables\Columns\TextColumn::make('domain')->searchable(),
                 Tables\Columns\TextColumn::make('clicks_count')->counts('clicks')->label('Clicks')->sortable(),
+                Tables\Columns\TextColumn::make('movements_count')->counts('movements')->label('Movements')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Date')->sortable()->dateTime('Y-m-d H:i:s'),
             ])
             ->filters([
