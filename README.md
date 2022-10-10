@@ -131,7 +131,7 @@ Each sponsor gets listed on in this readme.
 ## Credits
 
 - [Cannonb4ll](https://github.com/cannonb4ll)
-- [Alex](https://github.com/stayallive)
+- [Stayallive](https://github.com/stayallive)
 - [SebastiaanKloos](https://github.com/SebastiaanKloos)
 - [Filament Admin](https://filamentadmin.com/)
 - [Laravel](https://laravel.com/)
