@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('public')->nullable();
             $table->boolean('track_clicks')->default(true);
             $table->boolean('track_movements')->default(true);
+            $table->boolean('active')->default(true);
 
             $table->timestamps();
         });
