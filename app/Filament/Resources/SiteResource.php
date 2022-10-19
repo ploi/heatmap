@@ -63,6 +63,7 @@ class SiteResource extends Resource
                 Tables\Columns\TextColumn::make('clicks_count')->counts('clicks')->label('Clicks')->sortable(),
                 Tables\Columns\TextColumn::make('movements_count')->counts('movements')->label('Movements')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Date')->sortable()->dateTime('Y-m-d H:i:s'),
+                Tables\Columns\ToggleColumn::make('active')->label('Active')->sortable(),
             ])
             ->filters([
                 //

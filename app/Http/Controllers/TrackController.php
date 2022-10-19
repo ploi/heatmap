@@ -13,6 +13,10 @@ class TrackController extends Controller
     {
         $site = Site::where('hash', $request->input('hash'))->firstOrFail();
 
+        if(! $site->active) {
+            return [];
+        }
+
         $client = Client::updateOrCreate([
             'identifier' => $request->anonymizedIdentifier(),
         ], [
